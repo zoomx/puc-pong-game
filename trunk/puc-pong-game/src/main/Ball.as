@@ -5,18 +5,19 @@ package main {
 	
 	public class Ball extends UIComponent{
 		
-		private var mBall:Shape;
+		private var mCircle:Shape;
 	
 		public function Ball() {
+			super();
 			createBall();
 		}
 		
 		private function createBall():void{
-			mBall = new Shape();
-			mBall.graphics.beginFill(0x000000, 1.0);
-			mBall.graphics.drawCircle(50,50,15);
-			mBall.graphics.endFill();
-			addChild(mBall);
+			mCircle = new Shape();
+			mCircle.graphics.beginFill(0xefefef, 1.0);
+			mCircle.graphics.drawCircle(50,50,15);
+			mCircle.graphics.endFill();
+			addChild(mCircle);
 		}
 		
 		public function getBall():UIComponent{

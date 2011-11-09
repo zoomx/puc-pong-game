@@ -2,6 +2,8 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   showStatusBar="false"
+					   backgroundColor="0x1e1e1e"
 					   creationComplete="init()">
 	<fx:Declarations>
 
@@ -11,18 +13,27 @@
 		<![CDATA[
 			import main.Game;
 			
+			import mx.core.Window;
+			
 			private var mGame:Game;
 			
 			public function init():void{
+				
+				//fullscreen window
+				nativeWindow.stage.fullScreenSourceRect = new Rectangle(0, 0, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+				nativeWindow.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+				
+				//fullscreen stage
 				STAGE.width = this.width;
 				STAGE.height = this.height;
+							
 				mGame = new Game(STAGE);
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:BorderContainer id="STAGE" backgroundColor="0x1e1e1e">
+	<s:BorderContainer id="STAGE" backgroundColor="0x1e1e1e" borderVisible="false">
 		
 	</s:BorderContainer>
 </s:WindowedApplication>
