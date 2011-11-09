@@ -10,7 +10,6 @@ package main{
 		
 		private var mIsSolid:Boolean;
 		private var mType:uint;
-		private var mId:int;
 		private var mStartX:int;
 		private var mStartY:int;
 		private var mStopX:int;
@@ -20,23 +19,23 @@ package main{
 		
 		/* each static variable represents one side of the octagon for easy identification and works as the id of the wall */
 		/* horizontal lines*/
-		public static var H1:int = 0;
-		public static var H2:int = 1;
+		public static var H1:String = "H1";
+		public static var H2:String = "H2";
 		
 		/* vertical lines */
-		public static var V1:int = 2;
-		public static var V2:int = 3;
+		public static var V1:String = "V1";
+		public static var V2:String = "V2";
 		
 		/* diagonal lines*/
-		public static var D1:int = 4;
-		public static var D2:int = 5;
-		public static var D3:int = 6;
-		public static var D4:int = 7;
+		public static var D1:String = "D1";
+		public static var D2:String = "D2";
+		public static var D3:String = "D3";
+		public static var D4:String = "D4";
 		
 		public static var PLAYER_WALL:int = 0;
 		public static var NON_PLAYER_WALL:int = 1;
 		
-		public function Wall(id:int, startX:int, startY:int, stopX:int, stopY:int){
+		public function Wall(startX:int, startY:int, stopX:int, stopY:int){
 			super();
 			
 			this.mStartX = startX;
@@ -49,7 +48,7 @@ package main{
 		
 		public function createWall():void{
 			mLine = new Shape();
-			mLine.graphics.lineStyle(25, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+			mLine.graphics.lineStyle(12, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
 			mLine.graphics.moveTo(mStartX, mStartY);
 			mLine.graphics.lineTo(mStopX, mStopY);
 			addChild(mLine);

@@ -27,7 +27,7 @@
 				STAGE.width = this.width;
 				STAGE.height = this.height;
 							
-				mGame = new Game(STAGE);
+				mGame = new Game(STAGE, 4);
 			}
 			
 		]]>

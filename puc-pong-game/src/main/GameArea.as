@@ -8,89 +8,149 @@ package main{
 	
 	public class GameArea extends UIComponent{
 		
-		private var mHeight:int;
-		private var mWidth:int;
+		private var mScreenHeight:int;
+		private var mScreenWidth:int;
+		
+		public var mX:int;
+		public var mY:int;
+		
+		public var mSize:int;
 		
 		/* the area of the octagon, walls are extra drawed */
-		private var mOctagon:Path;
+		private var mOctagon:Shape;
 		
 		public function GameArea(height:int, width:int){
 			super();
-			this.mHeight = height - 50;
-			this.mWidth = width;
+			this.mScreenHeight = height - 50;
+			this.mScreenWidth = width;
+			this.mSize = mScreenHeight;
 			createGameArea();
 		}
 		
 		private function createGameArea():void{
+					
+			/* commands for drawing the octagon */
+			var commands:Vector.<int> = new Vector.<int>();
 			
-			mOctagon = new Path();
+			/* coordinates for drawing the octagon */
+			var coords:Vector.<Number> = new Vector.<Number>();
 			
-			var lineWidth:int = mHeight / 2.333;
+			var lineWidth:int = mScreenHeight / 2.333;
+			
+			/* represents the first starting points to get a clean ending*/
+			var xPos:int;
+			var yPos:int;
 			
 			/* create H1 line */
-			var startX:int = (mWidth / 2) - (lineWidth / 2);
+			var startX:int = (mScreenWidth / 2) - (lineWidth / 2);
 			var startY:int = 25;
 			var stopX:int = startX + lineWidth;
 			var stopY:int = 25;
-			var wall:Wall = new Wall(Wall.H1, startX, startY, stopX, stopY);
+			var wall:Wall = new Wall(startX, startY, stopX, stopY);
+			
+			wall.name = Wall.H1;
 			addChild(wall);
+			
+			commands.push(1,2,2,2);			//add data do path commands
+			coords.push(startX, startY);	//add data to path coordinates
+			coords.push(stopX, stopY);		//add data to path coordinates	
+			xPos = startX;	
+			yPos = startY;
+			mY = startY;
 			
 			/* create D1 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX + (lineWidth * (2/3));
 			stopY = startY + (lineWidth * (2/3));
-			wall = new Wall(Wall.D1, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, stopX, stopY);
+			wall.name = Wall.D1;
 			addChild(wall);
+			commands.push(2,2);
+			coords.push(stopX, stopY);
 			
 			/* create V1 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX;
 			stopY = startY + lineWidth;
-			wall = new Wall(Wall.V1, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, stopX, stopY);
+			wall.name = Wall.V1;
 			addChild(wall);
+			commands.push(2,2);
+			coords.push(stopX, stopY);
 			
 			/* create D2 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX - (lineWidth * (2/3));
 			stopY = startY + (lineWidth * (2/3));
-			wall = new Wall(Wall.D2, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, stopX, stopY);
+			wall.name = Wall.D2;
 			addChild(wall);
+			commands.push(2,2);
+			coords.push(stopX, stopY);
 			
 			/* create H2 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX - lineWidth;
 			stopY = startY;
-			wall = new Wall(Wall.H2, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, stopX, stopY);
+			wall.name = Wall.H2;
 			addChild(wall);
+			commands.push(2,2);
+			coords.push(stopX, stopY); 
 			
 			/* create D3 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX - (lineWidth * (2/3));
 			stopY = startY - (lineWidth * (2/3));
-			wall = new Wall(Wall.D3, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, stopX, stopY);
+			wall.name = Wall.D3;
 			addChild(wall);
+			commands.push(2,2);
+			coords.push(stopX, stopY); 
 			
 			/* create V2 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX;
 			stopY = startY - lineWidth;
-			wall = new Wall(Wall.V2, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, stopX, stopY);
+			wall.name = Wall.V2;
 			addChild(wall);
+			commands.push(2,2);
+			coords.push(stopX, stopY); 
+			mX = startX;
 			
 			/* create D4 line */
 			startX = stopX;
 			startY = stopY;
 			stopX = startX + (lineWidth * (2/3));
 			stopY = startY - (lineWidth * (2/3));
-			wall = new Wall(Wall.D4, startX, startY, stopX, stopY);
+			wall = new Wall(startX, startY, xPos, yPos);
+			wall.name = Wall.D4;
 			addChild(wall);
-		}	
+			commands.push(2,2);
+			coords.push(xPos, yPos); 
+			
+			drawOctagon(commands, coords);
+		}
+		
+		private function drawOctagon(commands:Vector.<int>, coords:Vector.<Number>):void{
+			mOctagon = new Shape();
+			mOctagon.graphics.beginFill(0x292929); 
+			mOctagon.graphics.drawPath(commands, coords);
+			mOctagon.name = "AREA";
+			addChildAt(mOctagon, 0);
+		}
+		
+		public function getWall(name:String):Wall{
+			return getChildByName(name) as Wall;
+		}
+		
 	}
 }
 	
