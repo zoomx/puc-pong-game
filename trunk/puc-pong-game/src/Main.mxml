@@ -4,7 +4,8 @@
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   showStatusBar="false"
 					   backgroundColor="0x1e1e1e"
-					   creationComplete="init()">
+					   creationComplete="init()"
+					   frameRate="120">
 	<fx:Declarations>
 
 	</fx:Declarations>

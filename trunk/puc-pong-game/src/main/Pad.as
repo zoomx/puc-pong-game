@@ -11,10 +11,10 @@ package main{
 		private var mWall:String;
 		
 		private var mPlayerID:int;
-		private var mX:int;
-		private var mY:int;
-		private var mWidth:int;
-		private var mHeight:int;
+		public var mX:int;
+		public var mY:int;
+		public var mWidth:int;
+		public var mHeight:int;
 		private var mLeftMax:int;
 		private var mRightMax:int;
 		
