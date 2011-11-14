@@ -113,5 +113,9 @@ package main{
 		public function getWall():String{
 			return mWall;
 		}
+		
+		public function hits(ball:Ball):Boolean{
+			return mRect.hitTestObject(ball);
+		}
 	}
 }

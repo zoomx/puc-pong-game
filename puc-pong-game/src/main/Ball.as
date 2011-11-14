@@ -12,12 +12,13 @@ package main {
 		private var mDirection:Point;
 		
 		private var mRadius:int = 12;
-		public var mVelocity:int = 2;
+		public var mVelocityX:Number = 0;
+		public var mVelocityY:Number = 3;
 	
 		public function Ball(startX:int, startY:int) {
 			super();
 			this.mPosition = new Point(startX, startY);
-			this.mDirection = new Point(0, mVelocity);
+			this.mDirection = new Point(mVelocityX, mVelocityY);
 			createBall();
 		}
 		
