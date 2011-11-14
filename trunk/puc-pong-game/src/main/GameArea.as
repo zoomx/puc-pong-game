@@ -16,6 +16,8 @@ package main{
 		
 		public var mSize:int;
 		
+		public var mWalls:Vector.<Wall>;
+		
 		/* the area of the octagon, walls are extra drawed */
 		private var mOctagon:Shape;
 		
@@ -28,6 +30,7 @@ package main{
 		}
 		
 		private function createGameArea():void{
+			mWalls = new Vector.<Wall>();
 					
 			/* commands for drawing the octagon */
 			var commands:Vector.<int> = new Vector.<int>();
@@ -50,6 +53,7 @@ package main{
 			
 			wall.name = Wall.H1;
 			addChild(wall);
+			mWalls.push(wall);
 			
 			commands.push(1,2,2,2);			//add data do path commands
 			coords.push(startX, startY);	//add data to path coordinates
@@ -66,6 +70,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D1;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY);
 			
@@ -77,6 +82,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V1;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY);
 			
@@ -88,6 +94,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D2;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY);
 			
@@ -99,6 +106,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.H2;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY); 
 			
@@ -110,6 +118,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D3;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY); 
 			
@@ -121,6 +130,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V2;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY); 
 			mX = startX;
@@ -133,6 +143,7 @@ package main{
 			wall = new Wall(startX, startY, xPos, yPos);
 			wall.name = Wall.D4;
 			addChild(wall);
+			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(xPos, yPos); 
 			
@@ -149,6 +160,10 @@ package main{
 		
 		public function getWall(name:String):Wall{
 			return getChildByName(name) as Wall;
+		}
+		
+		public function hits(ball:Ball):Boolean{
+			return mOctagon.hasOwnProperty(ball);
 		}
 		
 	}

@@ -3,6 +3,9 @@ package main{
 	import flash.display.CapsStyle;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.geom.Point;
+	
+	import mx.containers.utilityClasses.PostScaleAdapter;
 	
 	import spark.primitives.Path;
 	
@@ -57,6 +60,32 @@ package main{
 		
 		public function getWall():Sprite{
 			return this;
+		}
+		
+		public function hits(ball:Ball):Boolean{
+			if(name == Wall.H1 || name == Wall.H2 || name == Wall.V1 || name == Wall.V2){
+				return mLine.hitTestObject(ball);
+			}
+			else if(name == Wall.D1){
+				var m:Number = Math.floor((mStopY - mStartY) / (mStopX - mStartX));
+				var c:Number = mStartY - (m * mStartX);
+				
+				var b:Boolean = ball.mPosition.y == (m * ball.mPosition.x) + c;
+				 
+				return b;
+			}
+			else if(name == Wall.D2){
+				return false;
+			}
+			else if(name == Wall.D3){
+				return false;
+			}
+			else if(name == Wall.D4){
+				return false;
+			}
+			else{
+				return false;
+			}
 		}
 	}
 }

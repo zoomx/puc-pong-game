@@ -7,6 +7,7 @@ package main {
 	import flash.ui.Keyboard;
 	
 	import mx.core.FlexGlobals;
+	import mx.core.UIComponent;
 	
 	import spark.components.BorderContainer;
 	
@@ -111,18 +112,44 @@ package main {
 		}
 		
 		public function checkBoundaries():void{
+
 			for each (var pad:Pad in mPads){
-				if(pad.getWall() == Wall.H1){
-					if(mBall.mPosition.y + (mBall.height) <= (pad.mY + pad.mHeight)){
-						mBall.mVelocity = - mBall.mVelocity;
-						mBall.changeDirection(new Point(0, mBall.mVelocity));
+				if(pad.hits(mBall)){
+					if(pad.getWall() == Wall.H1){
+						mBall.mVelocityY = - mBall.mVelocityY;
+						mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
+					}
+					else if(pad.getWall() == Wall.H2){
+						mBall.mVelocityY = - mBall.mVelocityY;
+						mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
 					}
 				}
-				else if(pad.getWall() == Wall.H2){
-					if(mBall.mPosition.y - (mBall.height) >= (pad.mY - pad.mHeight)){
-						mBall.mVelocity = - mBall.mVelocity;
-						mBall.changeDirection(new Point(0, mBall.mVelocity));
+			}
+
+			for each(var wall:Wall in mArea.mWalls){
+				if(wall.hits(mBall)){
+					if(wall.name == Wall.H1){
+						mBall.mVelocityX = mBall.mVelocityX;
+						mBall.mVelocityY = -mBall.mVelocityY;	
 					}
+					else if(wall.name == Wall.H2){
+						mBall.mVelocityX = mBall.mVelocityX;
+						mBall.mVelocityY = -mBall.mVelocityY;	
+					}
+					else if(wall.name == Wall.V1){
+						mBall.mVelocityX = -mBall.mVelocityX;
+						mBall.mVelocityY = mBall.mVelocityY;	
+					}
+					else if(wall.name == Wall.V2){
+						mBall.mVelocityX = -mBall.mVelocityX;
+						mBall.mVelocityY = mBall.mVelocityY;	
+					}
+					else if(wall.name == Wall.D1){
+						mBall.mVelocityX = -mBall.mVelocityX;
+						mBall.mVelocityY = -mBall.mVelocityY;
+					}
+					
+					mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
 				}
 			}
 		}
