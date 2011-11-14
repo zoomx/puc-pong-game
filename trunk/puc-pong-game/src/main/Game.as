@@ -1,4 +1,8 @@
 package main {
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
+	
 	import mx.core.FlexGlobals;
 	
 	import spark.components.BorderContainer;
@@ -32,6 +36,8 @@ package main {
 			for(i=0; i < playerCount; i++){
 				createPad(i+1);
 			}
+			
+			mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		}
 		
 		private function createPad(playerId:int):void{
@@ -41,40 +47,58 @@ package main {
 			var width:int = 120;
 			var height:int = 20;
 			
-			var wall:String;
+			var left:int;
+			var right:int;
+			
+			var wall:Wall;
 			
 			switch (playerId){
 				case 1:
 					x = (mStage.width / 2) - (width / 2);
 					y = (mStage.y + 35);
-					wall = Wall.H1;
+					
+					wall = mArea.getWall("H1");
+					left = wall.mStartX;
+					right = wall.mStopX;
 					break;
 				case 2:					
 					x = (mStage.width / 2) - (width / 2);
 					y = mStage.height - 60;
-					wall = Wall.H2;
+					wall = mArea.getWall("H2");
+					left = wall.mStopX;
+					right = wall.mStartX;
 					break;
 				case 3:
 					x = mArea.mX + mArea.mSize - 32;
 					y = (mStage.height / 2) - (width / 2);
 					width = 20;
 					height = 120;
-					wall = Wall.V1;
+					wall = mArea.getWall("V1");
+					left = wall.mStartY;
+					right = wall.mStopY;
 					break;
 				case 4:
 					x = mArea.mX + 12;
 					y = (mStage.height / 2) - (width / 2);
 					width = 20;
 					height = 120;
-					wall = Wall.V2;
+					wall = mArea.getWall("V2");
+					left = wall.mStopY;
+					right = wall.mStartY;
 					break;
 				default:
 					break;
 			}
 			
-			var pad:Pad = new Pad(playerId, x, y, width, height, wall);
+			var pad:Pad = new Pad(playerId, x, y, width, height, wall.name, left, right);
 			mStage.addElement(pad);
 			mPads.push(pad);
+		}
+		
+		private function onMouseMove(e:MouseEvent):void{
+			for each (var pad:Pad in mPads){
+				pad.movePad(e.localX, e.localY);
+			}
 		}
 	}
 }

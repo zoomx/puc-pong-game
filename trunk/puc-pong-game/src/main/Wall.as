@@ -10,14 +10,15 @@ package main{
 		
 		private var mIsSolid:Boolean;
 		private var mType:uint;
-		private var mStartX:int;
-		private var mStartY:int;
-		private var mStopX:int;
-		private var mStopY:int;
+		
+		public var mStartX:int;
+		public var mStartY:int;
+		public var mStopX:int;
+		public var mStopY:int;
 		
 		private var mLine:Shape;
 		
-		/* each static variable represents one side of the octagon for easy identification and works as the id of the wall */
+		/* each static variable represents one side of the octagon for easy identification and works as the name of the wall */
 		/* horizontal lines*/
 		public static var H1:String = "H1";
 		public static var H2:String = "H2";

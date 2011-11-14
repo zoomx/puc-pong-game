@@ -15,10 +15,12 @@ package main{
 		private var mY:int;
 		private var mWidth:int;
 		private var mHeight:int;
+		private var mLeftMax:int;
+		private var mRightMax:int;
 		
 		private var mRect:Shape;
 		
-		public function Pad(playerId:int, x:int, y:int, width:int, height:int, wall:String) {
+		public function Pad(playerId:int, x:int, y:int, width:int, height:int, wall:String, left:int, right:int) {
 			super();
 			
 			this.mX = x;
@@ -27,6 +29,8 @@ package main{
 			this.mWidth = width;
 			this.mHeight = height;
 			this.mPlayerID = playerId;
+			this.mLeftMax = left;
+			this.mRightMax = right;
 			
 			createPad();
 		}
@@ -37,6 +41,77 @@ package main{
 			mRect.graphics.drawRect(mX, mY, mWidth, mHeight);
 			mRect.graphics.endFill();
 			addChild(mRect);
+		}
+		
+		public function movePad(mouseX:int, mouseY:int):void{
+			if(mWall == Wall.H1){
+				if(mouseX <= mLeftMax){
+					mX = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(mouseX >= (mRightMax - mRect.width)){
+					mX = mRightMax - mRect.width;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mX = mouseX;
+					removeChild(mRect);
+					createPad();
+				}
+			}
+			else if(mWall == Wall.H2){
+				if(mouseX <= mLeftMax){
+					mX = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(mouseX >= (mRightMax - mRect.width)){
+					mX = mRightMax - mRect.width;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mX = mouseX;
+					removeChild(mRect);
+					createPad();
+				}				
+			}
+			else if(mWall == Wall.V1){
+				if(mouseY <= mLeftMax){
+					mY = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(mouseY >= (mRightMax - mRect.height)){
+					mY = mRightMax - mRect.height;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mY = mouseY;
+					removeChild(mRect);
+					createPad();
+				}				
+			}
+			else if(mWall == Wall.V2){
+				if(mouseY <= mLeftMax){
+					mY = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(mouseY >= (mRightMax - mRect.height)){
+					mY = mRightMax - mRect.height;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mY = mouseY;
+					removeChild(mRect);
+					createPad();
+				}		
+			}
+		}
+		
+		public function getWall():String{
+			return mWall;
 		}
 	}
 }
