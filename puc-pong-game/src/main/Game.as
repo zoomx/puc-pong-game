@@ -1,6 +1,9 @@
 package main {
+	import flash.display.FrameLabel;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	
 	import mx.core.FlexGlobals;
@@ -27,7 +30,7 @@ package main {
 			mStage.addElement(mArea);
 			
 			//create pong ball
-			mBall = new Ball();
+			mBall = new Ball(mStage.width/2, mStage.height/2);
 			mStage.addElement(mBall);
 				
 			//create pads
@@ -38,6 +41,7 @@ package main {
 			}
 			
 			mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		private function createPad(playerId:int):void{
@@ -98,6 +102,28 @@ package main {
 		private function onMouseMove(e:MouseEvent):void{
 			for each (var pad:Pad in mPads){
 				pad.movePad(e.localX, e.localY);
+			}
+		}
+		
+		public function onEnterFrame(e:Event):void{
+			checkBoundaries();
+			mBall.moveBall();
+		}
+		
+		public function checkBoundaries():void{
+			for each (var pad:Pad in mPads){
+				if(pad.getWall() == Wall.H1){
+					if(mBall.mPosition.y + (mBall.height) <= (pad.mY + pad.mHeight)){
+						mBall.mVelocity = - mBall.mVelocity;
+						mBall.changeDirection(new Point(0, mBall.mVelocity));
+					}
+				}
+				else if(pad.getWall() == Wall.H2){
+					if(mBall.mPosition.y - (mBall.height) >= (pad.mY - pad.mHeight)){
+						mBall.mVelocity = - mBall.mVelocity;
+						mBall.changeDirection(new Point(0, mBall.mVelocity));
+					}
+				}
 			}
 		}
 	}
