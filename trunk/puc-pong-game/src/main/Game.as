@@ -128,25 +128,45 @@ package main {
 
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
-					if(wall.name == Wall.H1){
+					if(wall.name == Wall.H1 && !wall.mLastHit){
 						mBall.mVelocityX = mBall.mVelocityX;
 						mBall.mVelocityY = -mBall.mVelocityY;	
+						mArea.markLastHit(wall);
 					}
-					else if(wall.name == Wall.H2){
+					else if(wall.name == Wall.H2 && !wall.mLastHit){
 						mBall.mVelocityX = mBall.mVelocityX;
 						mBall.mVelocityY = -mBall.mVelocityY;	
+						mArea.markLastHit(wall);
 					}
-					else if(wall.name == Wall.V1){
+					else if(wall.name == Wall.V1 && !wall.mLastHit){
 						mBall.mVelocityX = -mBall.mVelocityX;
-						mBall.mVelocityY = mBall.mVelocityY;	
+						mBall.mVelocityY = mBall.mVelocityY;
+						mArea.markLastHit(wall);
 					}
-					else if(wall.name == Wall.V2){
+					else if(wall.name == Wall.V2 && !wall.mLastHit){
 						mBall.mVelocityX = -mBall.mVelocityX;
-						mBall.mVelocityY = mBall.mVelocityY;	
+						mBall.mVelocityY = mBall.mVelocityY;
+						mArea.markLastHit(wall);
 					}
-					else if(wall.name == Wall.D1){
+					else if(wall.name == Wall.D1 && !wall.mLastHit){
 						mBall.mVelocityX = -mBall.mVelocityX;
+						mBall.mVelocityY = mBall.mVelocityY;
+						mArea.markLastHit(wall);
+					}
+					else if(wall.name == Wall.D2 && !wall.mLastHit){
+						mBall.mVelocityX = mBall.mVelocityX;
 						mBall.mVelocityY = -mBall.mVelocityY;
+						mArea.markLastHit(wall);
+					}
+					else if(wall.name == Wall.D3 && !wall.mLastHit){
+						mBall.mVelocityX = -mBall.mVelocityX;
+						mBall.mVelocityY = mBall.mVelocityY;
+						mArea.markLastHit(wall);
+					}
+					else if(wall.name == Wall.D4 && !wall.mLastHit){
+						mBall.mVelocityX = mBall.mVelocityX;
+						mBall.mVelocityY = -mBall.mVelocityY;
+						mArea.markLastHit(wall);
 					}
 					
 					mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
