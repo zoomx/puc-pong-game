@@ -166,6 +166,16 @@ package main{
 			return mOctagon.hasOwnProperty(ball);
 		}
 		
+		public function markLastHit(wall:Wall):void{
+			for each(var w:Wall in mWalls){
+				if(w.name == wall.name){
+					w.mLastHit = true;
+				}else{
+					w.mLastHit = false;
+				}
+			}
+		}
+		
 	}
 }
 	

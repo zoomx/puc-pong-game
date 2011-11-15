@@ -19,6 +19,8 @@ package main{
 		public var mStopX:int;
 		public var mStopY:int;
 		
+		public var mLastHit:Boolean = false;
+				
 		private var mLine:Shape;
 		
 		/* each static variable represents one side of the octagon for easy identification and works as the name of the wall */
@@ -62,26 +64,32 @@ package main{
 			return this;
 		}
 		
+		/* function detects collision between the ball and the walls */
 		public function hits(ball:Ball):Boolean{
-			if(name == Wall.H1 || name == Wall.H2 || name == Wall.V1 || name == Wall.V2){
-				return mLine.hitTestObject(ball);
+			
+			if(name == Wall.H1){
+				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y - (ball.mRadius), true);
 			}
-			else if(name == Wall.D1){
-				var m:Number = Math.floor((mStopY - mStartY) / (mStopX - mStartX));
-				var c:Number = mStartY - (m * mStartX);
-				
-				var b:Boolean = ball.mPosition.y == (m * ball.mPosition.x) + c;
-				 
-				return b;
+			else if(name == Wall.H2){
+				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y  + (ball.mRadius), true);
+			}
+			else if(name == Wall.V1){
+				return mLine.hitTestPoint(ball.mPosition.x + (ball.mRadius), ball.mPosition.y, true);
+			}
+			else if(name == Wall.V2){
+				return mLine.hitTestPoint(ball.mPosition.x - (ball.mRadius), ball.mPosition.y, true);
+			}
+			else if(name == Wall.D1){				 
+				return mLine.hitTestPoint(ball.mPosition.x  + (ball.mRadius), ball.mPosition.y  - (ball.mRadius), true);
 			}
 			else if(name == Wall.D2){
-				return false;
+				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y, true);
 			}
 			else if(name == Wall.D3){
-				return false;
+				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y, true);
 			}
 			else if(name == Wall.D4){
-				return false;
+				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y, true);
 			}
 			else{
 				return false;

@@ -11,8 +11,8 @@ package main {
 		public var mPosition:Point;
 		private var mDirection:Point;
 		
-		private var mRadius:int = 12;
-		public var mVelocityX:Number = 0;
+		public var mRadius:int = 12;
+		public var mVelocityX:Number = 2;
 		public var mVelocityY:Number = 3;
 	
 		public function Ball(startX:int, startY:int) {
@@ -43,6 +43,11 @@ package main {
 		
 		public function getBall():UIComponent{
 			return this;
+		}
+		
+		public function getNewDirection(direction:Point):Point{
+			var direc:Point = new Point(0,0);
+			return direc;
 		}
 	}
 }
