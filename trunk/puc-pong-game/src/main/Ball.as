@@ -21,7 +21,7 @@ package main {
 		public var mRadius:int = 12;
 		
 		//velocity of the ball
-		public var mVelocity:int = 3;
+		public var mVelocity:int = 6;
 	
 		public function Ball(startX:int, startY:int, direction:Point) {
 			super();

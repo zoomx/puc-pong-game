@@ -117,6 +117,7 @@ package main {
 				if(pad.hits(mBall)){
 					if(!pad.mLastHit)mBall.mDirection = mBall.setDirectionByPadHit(pad);
 					markPadLastHit(pad);
+					mArea.markWallLastHit(null);
 				}
 			}
 
@@ -124,15 +125,23 @@ package main {
 				if(wall.hits(mBall)){
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
 					mArea.markWallLastHit(wall);
+					markPadLastHit(null);
 				}
 			}
 		}
 		
 		public function markPadLastHit(pad:Pad):void{
-			for each(var p:Pad in mPads){
-				if(p.getWall() == pad.getWall()){
-					p.mLastHit = true;
-				}else{
+			var p:Pad;
+			if(pad != null){
+				for each(p in mPads){
+					if(p.getWall() == pad.getWall()){
+						p.mLastHit = true;
+					}else{
+						p.mLastHit = false;
+					}
+				}
+			}else{
+				for each(p in mPads){
 					p.mLastHit = false;
 				}
 			}
