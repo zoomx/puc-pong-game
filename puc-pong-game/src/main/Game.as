@@ -31,7 +31,7 @@ package main {
 			mStage.addElement(mArea);
 			
 			//create pong ball
-			mBall = new Ball(mStage.width/2, mStage.height/2);
+			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,1));
 			mStage.addElement(mBall);
 				
 			//create pads
@@ -115,61 +115,25 @@ package main {
 
 			for each (var pad:Pad in mPads){
 				if(pad.hits(mBall)){
-					if(pad.getWall() == Wall.H1){
-						mBall.mVelocityY = - mBall.mVelocityY;
-						mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
-					}
-					else if(pad.getWall() == Wall.H2){
-						mBall.mVelocityY = - mBall.mVelocityY;
-						mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
-					}
+					if(!pad.mLastHit)mBall.mDirection = mBall.setDirectionByPadHit(pad);
+					markPadLastHit(pad);
 				}
 			}
 
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
-					if(wall.name == Wall.H1 && !wall.mLastHit){
-						mBall.mVelocityX = mBall.mVelocityX;
-						mBall.mVelocityY = -mBall.mVelocityY;	
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.H2 && !wall.mLastHit){
-						mBall.mVelocityX = mBall.mVelocityX;
-						mBall.mVelocityY = -mBall.mVelocityY;	
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.V1 && !wall.mLastHit){
-						mBall.mVelocityX = -mBall.mVelocityX;
-						mBall.mVelocityY = mBall.mVelocityY;
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.V2 && !wall.mLastHit){
-						mBall.mVelocityX = -mBall.mVelocityX;
-						mBall.mVelocityY = mBall.mVelocityY;
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.D1 && !wall.mLastHit){
-						mBall.mVelocityX = -mBall.mVelocityX;
-						mBall.mVelocityY = mBall.mVelocityY;
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.D2 && !wall.mLastHit){
-						mBall.mVelocityX = mBall.mVelocityX;
-						mBall.mVelocityY = -mBall.mVelocityY;
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.D3 && !wall.mLastHit){
-						mBall.mVelocityX = -mBall.mVelocityX;
-						mBall.mVelocityY = mBall.mVelocityY;
-						mArea.markLastHit(wall);
-					}
-					else if(wall.name == Wall.D4 && !wall.mLastHit){
-						mBall.mVelocityX = mBall.mVelocityX;
-						mBall.mVelocityY = -mBall.mVelocityY;
-						mArea.markLastHit(wall);
-					}
-					
-					mBall.changeDirection(new Point(mBall.mVelocityX, mBall.mVelocityY));
+					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
+					mArea.markWallLastHit(wall);
+				}
+			}
+		}
+		
+		public function markPadLastHit(pad:Pad):void{
+			for each(var p:Pad in mPads){
+				if(p.getWall() == pad.getWall()){
+					p.mLastHit = true;
+				}else{
+					p.mLastHit = false;
 				}
 			}
 		}
