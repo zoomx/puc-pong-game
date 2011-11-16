@@ -167,10 +167,17 @@ package main{
 		}
 		
 		public function markWallLastHit(wall:Wall):void{
-			for each(var w:Wall in mWalls){
-				if(w.name == wall.name){
-					w.mLastHit = true;
-				}else{
+			var w:Wall;
+			if(wall != null){
+				for each(w in mWalls){
+					if(w.name == wall.name){
+						w.mLastHit = true;
+					}else{
+						w.mLastHit = false;
+					}
+				}
+			}else{
+				for each(w in mWalls){
 					w.mLastHit = false;
 				}
 			}
