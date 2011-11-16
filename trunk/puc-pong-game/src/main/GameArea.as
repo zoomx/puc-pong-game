@@ -166,7 +166,7 @@ package main{
 			return mOctagon.hasOwnProperty(ball);
 		}
 		
-		public function markLastHit(wall:Wall):void{
+		public function markWallLastHit(wall:Wall):void{
 			for each(var w:Wall in mWalls){
 				if(w.name == wall.name){
 					w.mLastHit = true;
@@ -175,7 +175,6 @@ package main{
 				}
 			}
 		}
-		
 	}
 }
 	

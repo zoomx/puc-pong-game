@@ -10,13 +10,16 @@ package main{
 		/* the wall on which the pad is implemented*/
 		private var mWall:String;
 		
-		private var mPlayerID:int;
 		public var mX:int;
 		public var mY:int;
 		public var mWidth:int;
 		public var mHeight:int;
+		
+		public var mLastHit:Boolean = false;
+		
 		private var mLeftMax:int;
 		private var mRightMax:int;
+		private var mPlayerID:int;
 		
 		private var mRect:Shape;
 		
