@@ -4,10 +4,14 @@ package main {
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.system.Security;
 	import flash.ui.Keyboard;
 	
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
+	
+	import net.eriksjodin.arduino.Arduino;
+	import net.eriksjodin.arduino.events.ArduinoEvent;
 	
 	import spark.components.BorderContainer;
 	
@@ -17,10 +21,16 @@ package main {
 		private var mArea:GameArea;
 		private var mStage:BorderContainer;
 		private var mPads:Vector.<Pad>;
+		private var mArduino:Arduino;
+		private var mPlayerCount:int;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
+			
 			mStage = stage;
-			createNewGame(playerCount);
+			mPlayerCount = playerCount;
+			
+			mArduino = new Arduino();
+			mArduino.addEventListener(Event.CONNECT, onArduinoConnect);
 		}
 		
 		/* creates a new game with the ball, pads and the game area*/
@@ -41,8 +51,91 @@ package main {
 				createPad(i+1);
 			}
 			
-			mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			//mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+	
+		
+		private function onMouseMove(e:MouseEvent):void{
+			for each (var pad:Pad in mPads){
+				pad.movePadByMouse(e.localX, e.localY);
+			}
+		}
+		
+		public function onEnterFrame(e:Event):void{
+			checkBoundaries();
+			mBall.moveBall();
+		}
+		
+		public function checkBoundaries():void{
+
+			for each (var pad:Pad in mPads){
+				if(pad.hits(mBall)){
+					if(!pad.mLastHit)mBall.mDirection = mBall.setDirectionByPadHit(pad);
+					markPadLastHit(pad);
+					mArea.markWallLastHit(null);
+				}
+			}
+
+			for each(var wall:Wall in mArea.mWalls){
+				if(wall.hits(mBall)){
+					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
+					mArea.markWallLastHit(wall);
+					markPadLastHit(null);
+				}
+			}
+		}
+		
+		public function markPadLastHit(pad:Pad):void{
+			var p:Pad;
+			if(pad != null){
+				for each(p in mPads){
+					if(p.getWall() == pad.getWall()){
+						p.mLastHit = true;
+					}else{
+						p.mLastHit = false;
+					}
+				}
+			}else{
+				for each(p in mPads){
+					p.mLastHit = false;
+				}
+			}
+		}
+		
+		public function setUpArduino():void{
+			mArduino.setPinMode(2,Arduino.INPUT);
+			mArduino.addEventListener(ArduinoEvent.ANALOG_DATA, onReceiveData);
+		}
+		
+		public function onReceiveData(e:ArduinoEvent):void{
+			if(e.pin == 2){
+				trace("Analog pin " + e.pin + " on port: " + e.port +" = " + e.value);
+				for each (var pad:Pad in mPads){
+					pad.movePad(mapSensorValue(e.value, pad.getWall()));
+				}
+			}
+		}
+		
+		/* function maps the sensor value (0 - 1023) to the position of the pad and returns it*/
+		public function mapSensorValue(value:int, wall:String):int{
+			var max:Number = 1024;
+			var length:Number = mArea.mWallLength;
+			var position:Number = (length / 1024) * value;
+			
+			var wallPos:int
+			if(wall == Wall.H1) wallPos = mArea.getWall(wall).mStartX;
+			else if(wall == Wall.H2) wallPos = mArea.getWall(wall).mStopX;
+			else if(wall == Wall.V1) wallPos = mArea.getWall(wall).mStartY;
+			else if(wall == Wall.V2) wallPos = mArea.getWall(wall).mStopY;
+
+			return wallPos + position;
+		}
+		
+		private function onArduinoConnect(e:Event):void{
+			setUpArduino();
+			createNewGame(mPlayerCount);
 		}
 		
 		private function createPad(playerId:int):void{
@@ -99,52 +192,7 @@ package main {
 			mStage.addElement(pad);
 			mPads.push(pad);
 		}
-		
-		private function onMouseMove(e:MouseEvent):void{
-			for each (var pad:Pad in mPads){
-				pad.movePad(e.localX, e.localY);
-			}
-		}
-		
-		public function onEnterFrame(e:Event):void{
-			checkBoundaries();
-			mBall.moveBall();
-		}
-		
-		public function checkBoundaries():void{
-
-			for each (var pad:Pad in mPads){
-				if(pad.hits(mBall)){
-					if(!pad.mLastHit)mBall.mDirection = mBall.setDirectionByPadHit(pad);
-					markPadLastHit(pad);
-					mArea.markWallLastHit(null);
-				}
-			}
-
-			for each(var wall:Wall in mArea.mWalls){
-				if(wall.hits(mBall)){
-					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
-					mArea.markWallLastHit(wall);
-					markPadLastHit(null);
-				}
-			}
-		}
-		
-		public function markPadLastHit(pad:Pad):void{
-			var p:Pad;
-			if(pad != null){
-				for each(p in mPads){
-					if(p.getWall() == pad.getWall()){
-						p.mLastHit = true;
-					}else{
-						p.mLastHit = false;
-					}
-				}
-			}else{
-				for each(p in mPads){
-					p.mLastHit = false;
-				}
-			}
-		}
 	}
+	
+
 }

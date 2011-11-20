@@ -117,7 +117,7 @@ package main {
 			else if(pad.getWall() == Wall.V1){
 				return new Point(-mDirection.x, mDirection.y);;
 			}
-			else if(pad.getWall() == Wall.H2){
+			else if(pad.getWall() == Wall.V2){
 				return new Point(-mDirection.x, mDirection.y);;
 			}else{
 				return mDirection;
