@@ -46,7 +46,74 @@ package main{
 			addChild(mRect);
 		}
 		
-		public function movePad(mouseX:int, mouseY:int):void{
+		public function movePad(value:int):void{
+			if(mWall == Wall.H1){
+				if(value <= mLeftMax){
+					mX = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(value >= (mRightMax - mRect.width)){
+					mX = mRightMax - mRect.width;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mX = value;
+					removeChild(mRect);
+					createPad();
+				}
+			}
+			else if(mWall == Wall.H2){
+				if(value <= mLeftMax){
+					mX = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(value >= (mRightMax - mRect.width)){
+					mX = mRightMax - mRect.width;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mX = value;
+					removeChild(mRect);
+					createPad();
+				}				
+			}
+			else if(mWall == Wall.V1){
+				if(value <= mLeftMax){
+					mY = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(value >= (mRightMax - mRect.height)){
+					mY = mRightMax - mRect.height;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mY = value;
+					removeChild(mRect);
+					createPad();
+				}				
+			}
+			else if(mWall == Wall.V2){
+				if(value <= mLeftMax){
+					mY = mLeftMax;
+					removeChild(mRect);
+					createPad();
+				}
+				else if(value >= (mRightMax - mRect.height)){
+					mY = mRightMax - mRect.height;
+					removeChild(mRect);
+					createPad();
+				}else{
+					mY = value;
+					removeChild(mRect);
+					createPad();
+				}		
+			}
+		}
+		
+		public function movePadByMouse(mouseX:int, mouseY:int):void{
 			if(mWall == Wall.H1){
 				if(mouseX <= mLeftMax){
 					mX = mLeftMax;

@@ -14,6 +14,7 @@ package main{
 		public var mX:int;
 		public var mY:int;
 		
+		public var mWallLength:Number;
 		public var mSize:int;
 		
 		public var mWalls:Vector.<Wall>;
@@ -38,16 +39,16 @@ package main{
 			/* coordinates for drawing the octagon */
 			var coords:Vector.<Number> = new Vector.<Number>();
 			
-			var lineWidth:int = mScreenHeight / 2.333;
+			mWallLength = mScreenHeight / 2.333;
 			
 			/* represents the first starting points to get a clean ending*/
 			var xPos:int;
 			var yPos:int;
 			
 			/* create H1 line */
-			var startX:int = (mScreenWidth / 2) - (lineWidth / 2);
+			var startX:int = (mScreenWidth / 2) - (mWallLength / 2);
 			var startY:int = 25;
-			var stopX:int = startX + lineWidth;
+			var stopX:int = startX + mWallLength;
 			var stopY:int = 25;
 			var wall:Wall = new Wall(startX, startY, stopX, stopY);
 			
@@ -65,8 +66,8 @@ package main{
 			/* create D1 line */
 			startX = stopX;
 			startY = stopY;
-			stopX = startX + (lineWidth * (2/3));
-			stopY = startY + (lineWidth * (2/3));
+			stopX = startX + (mWallLength * (2/3));
+			stopY = startY + (mWallLength * (2/3));
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D1;
 			addChild(wall);
@@ -78,7 +79,7 @@ package main{
 			startX = stopX;
 			startY = stopY;
 			stopX = startX;
-			stopY = startY + lineWidth;
+			stopY = startY + mWallLength;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V1;
 			addChild(wall);
@@ -89,8 +90,8 @@ package main{
 			/* create D2 line */
 			startX = stopX;
 			startY = stopY;
-			stopX = startX - (lineWidth * (2/3));
-			stopY = startY + (lineWidth * (2/3));
+			stopX = startX - (mWallLength * (2/3));
+			stopY = startY + (mWallLength * (2/3));
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D2;
 			addChild(wall);
@@ -101,7 +102,7 @@ package main{
 			/* create H2 line */
 			startX = stopX;
 			startY = stopY;
-			stopX = startX - lineWidth;
+			stopX = startX - mWallLength;
 			stopY = startY;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.H2;
@@ -113,8 +114,8 @@ package main{
 			/* create D3 line */
 			startX = stopX;
 			startY = stopY;
-			stopX = startX - (lineWidth * (2/3));
-			stopY = startY - (lineWidth * (2/3));
+			stopX = startX - (mWallLength * (2/3));
+			stopY = startY - (mWallLength * (2/3));
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D3;
 			addChild(wall);
@@ -126,7 +127,7 @@ package main{
 			startX = stopX;
 			startY = stopY;
 			stopX = startX;
-			stopY = startY - lineWidth;
+			stopY = startY - mWallLength;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V2;
 			addChild(wall);
@@ -138,8 +139,8 @@ package main{
 			/* create D4 line */
 			startX = stopX;
 			startY = stopY;
-			stopX = startX + (lineWidth * (2/3));
-			stopY = startY - (lineWidth * (2/3));
+			stopX = startX + (mWallLength * (2/3));
+			stopY = startY - (mWallLength * (2/3));
 			wall = new Wall(startX, startY, xPos, yPos);
 			wall.name = Wall.D4;
 			addChild(wall);

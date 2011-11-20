@@ -19,7 +19,7 @@
 			private var mGame:Game;
 			
 			public function init():void{
-				
+								
 				//fullscreen window
 				nativeWindow.stage.fullScreenSourceRect = new Rectangle(0, 0, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
 				nativeWindow.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
