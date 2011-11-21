@@ -25,7 +25,7 @@ package main {
 		private var mPlayerCount:int;
 		
 		// if true game is controlled by the mouse, if false its controlled by arduino
-		private var mMouseControl:Boolean = true;
+		private var mMouseControl:Boolean = false;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -112,21 +112,43 @@ package main {
 		}
 		
 		public function setUpArduino():void{
+			mArduino.setPinMode(1,Arduino.INPUT);
 			mArduino.setPinMode(2,Arduino.INPUT);
+			mArduino.setPinMode(3,Arduino.INPUT);
+			mArduino.setPinMode(4,Arduino.INPUT);
 			mArduino.addEventListener(ArduinoEvent.ANALOG_DATA, onReceiveData);
 		}
 		
 		public function onReceiveData(e:ArduinoEvent):void{
-			if(e.pin == 2){
+			if(e.pin == 1 || e.pin == 2 || e.pin == 3 || e.pin == 4){
 				trace("Analog pin " + e.pin + " on port: " + e.port +" = " + e.value);
-				for each (var pad:Pad in mPads){
-					pad.movePad(mapSensorValue(e.value, pad.getWall()));
+				
+				var pad:Pad;
+				if(e.pin == 1){
+					for each (pad in mPads){
+						if(pad.getWall() == Wall.H1) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+					}
+				}
+				else if(e.pin == 2){
+					for each (pad in mPads){
+						if(pad.getWall() == Wall.V1) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+					}
+				}
+				else if(e.pin == 3){
+					for each (pad in mPads){
+						if(pad.getWall() == Wall.H2) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+					}
+				}
+				else if(e.pin == 4){
+					for each (pad in mPads){
+						if(pad.getWall() == Wall.V2) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+					}
 				}
 			}
 		}
 		
 		/* function maps the sensor value (0 - 1023) to the position of the pad and returns it*/
-		public function mapSensorValue(value:int, wall:String):int{
+		public function mapSensorValue(value:int, pin:int, wall:String):int{
 			var max:Number = 1024;
 			var length:Number = mArea.mWallLength;
 			var position:Number = (length / 1024) * value;
