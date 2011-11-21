@@ -38,6 +38,7 @@ package main{
 			createPad();
 		}
 		
+		/* creates a pad made by a rectangle */
 		private function createPad():void{
 			mRect = new Shape();
 			mRect.graphics.beginFill(0x454545, 1.0);
@@ -46,144 +47,60 @@ package main{
 			addChild(mRect);
 		}
 		
+		/* calculates the movement of a pad by a single sensor value */
 		public function movePad(value:int):void{
 			if(mWall == Wall.H1){
-				if(value <= mLeftMax){
-					mX = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(value >= (mRightMax - mRect.width)){
-					mX = mRightMax - mRect.width;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mX = value;
-					removeChild(mRect);
-					createPad();
-				}
+				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, value));
+				removeChild(mRect);
+				createPad();
 			}
 			else if(mWall == Wall.H2){
-				if(value <= mLeftMax){
-					mX = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(value >= (mRightMax - mRect.width)){
-					mX = mRightMax - mRect.width;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mX = value;
-					removeChild(mRect);
-					createPad();
-				}				
+				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, value));
+				removeChild(mRect);
+				createPad();			
 			}
 			else if(mWall == Wall.V1){
-				if(value <= mLeftMax){
-					mY = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(value >= (mRightMax - mRect.height)){
-					mY = mRightMax - mRect.height;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mY = value;
-					removeChild(mRect);
-					createPad();
-				}				
+				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, value));
+				removeChild(mRect);
+				createPad();				
 			}
 			else if(mWall == Wall.V2){
-				if(value <= mLeftMax){
-					mY = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(value >= (mRightMax - mRect.height)){
-					mY = mRightMax - mRect.height;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mY = value;
-					removeChild(mRect);
-					createPad();
-				}		
+				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, value));
+				removeChild(mRect);
+				createPad();		
 			}
 		}
 		
+		/* [test function] move the pad by mouse values */
 		public function movePadByMouse(mouseX:int, mouseY:int):void{
 			if(mWall == Wall.H1){
-				if(mouseX <= mLeftMax){
-					mX = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(mouseX >= (mRightMax - mRect.width)){
-					mX = mRightMax - mRect.width;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mX = mouseX;
-					removeChild(mRect);
-					createPad();
-				}
+				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, mouseX));
+				removeChild(mRect);
+				createPad();
 			}
 			else if(mWall == Wall.H2){
-				if(mouseX <= mLeftMax){
-					mX = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(mouseX >= (mRightMax - mRect.width)){
-					mX = mRightMax - mRect.width;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mX = mouseX;
-					removeChild(mRect);
-					createPad();
-				}				
+				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, mouseX));
+				removeChild(mRect);
+				createPad();			
 			}
 			else if(mWall == Wall.V1){
-				if(mouseY <= mLeftMax){
-					mY = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(mouseY >= (mRightMax - mRect.height)){
-					mY = mRightMax - mRect.height;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mY = mouseY;
-					removeChild(mRect);
-					createPad();
-				}				
+				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, mouseY));
+				removeChild(mRect);
+				createPad();			
 			}
 			else if(mWall == Wall.V2){
-				if(mouseY <= mLeftMax){
-					mY = mLeftMax;
-					removeChild(mRect);
-					createPad();
-				}
-				else if(mouseY >= (mRightMax - mRect.height)){
-					mY = mRightMax - mRect.height;
-					removeChild(mRect);
-					createPad();
-				}else{
-					mY = mouseY;
-					removeChild(mRect);
-					createPad();
-				}		
+				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, mouseY));
+				removeChild(mRect);
+				createPad();		
 			}
 		}
 		
+		/* returns the wall a pad belongs to */
 		public function getWall():String{
 			return mWall;
 		}
 		
+		/* returns if a ball hits a pad or not*/
 		public function hits(ball:Ball):Boolean{
 			return mRect.hitTestObject(ball);
 		}
