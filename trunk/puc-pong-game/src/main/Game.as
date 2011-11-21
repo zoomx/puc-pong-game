@@ -24,13 +24,20 @@ package main {
 		private var mArduino:Arduino;
 		private var mPlayerCount:int;
 		
+		// if true game is controlled by the mouse, if false its controlled by arduino
+		private var mMouseControl:Boolean = true;
+		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
 			mStage = stage;
 			mPlayerCount = playerCount;
 			
-			mArduino = new Arduino();
-			mArduino.addEventListener(Event.CONNECT, onArduinoConnect);
+			if(!mMouseControl){
+				mArduino = new Arduino();
+				mArduino.addEventListener(Event.CONNECT, onArduinoConnect);
+			}else{
+				createNewGame(mPlayerCount);
+			}
 		}
 		
 		/* creates a new game with the ball, pads and the game area*/
@@ -51,7 +58,7 @@ package main {
 				createPad(i+1);
 			}
 			
-			//mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			if(mMouseControl)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
