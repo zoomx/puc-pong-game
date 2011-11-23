@@ -2,6 +2,8 @@ package main {
 	import flash.display.Shape;
 	import flash.geom.Point;
 	
+	import math.VectorAnalysis;
+	
 	import mx.core.UIComponent;
 	
 	public class Ball extends UIComponent{
@@ -21,7 +23,7 @@ package main {
 		public var mRadius:int = 12;
 		
 		//velocity of the ball
-		public var mVelocity:int = 6;
+		public var mVelocity:int = 3;
 	
 		public function Ball(startX:int, startY:int, direction:Point) {
 			super();
@@ -64,46 +66,31 @@ package main {
 			else if(wall.name == Wall.V1){
 				return new Point(-mDirection.x, mDirection.y);;
 			}
-			else if(wall.name == Wall.H2){
-				return new Point(-mDirection.x, mDirection.y);;
+			else if(wall.name == Wall.V2){
+				return new Point(-mDirection.x, mDirection.y);
 			}else{
 
-				var direction:Point = new Point(0,0);
+				var angle:Number;
+				
+				if(wall.name == Wall.D1) angle = 225;
+				else if(wall.name == Wall.D2) angle = 135;
+				else if(wall.name == Wall.D3) angle = 45;
+				else if(wall.name == Wall.D4) angle = 135;
+				
 				var vWall:Point = new Point();
 				var vBall:Point = new Point();
 				
 				//determine wall vector
-				vWall.x = wall.mStopX - wall.mStartX;
-				vWall.y = wall.mStopY - wall.mStartY;
+				vWall = VectorAnalysis.getVector(wall.mStopX - wall.mStartX, angle);
 				
 				//determine ball vector
 				vBall.x = mPosition.x - mLastPosition.x;
 				vBall.y = mPosition.y - mLastPosition.y;
+								
+				var n:Point = VectorAnalysis.normalize(vWall); // normalized wall vector
+				var r:Point = VectorAnalysis.getReflectionVector(vBall, n); // reflection result vector
 				
-				//calculate scalar
-				var scalar:Number = (vBall.x * vWall.x) + (vBall.y * vWall.y);
-				
-				//length of vector vWall
-				var vWallLength:Number = Math.sqrt(Math.pow(vWall.x, 2) + Math.pow(vWall.y, 2));
-				
-				//length of vector vBall
-				var vBallLength:Number = Math.sqrt(Math.pow(vBall.x, 2) + Math.pow(vBall.y, 2));
-				
-				var vBallNorm:Point = new Point(vBall.x/vBallLength, vBall.y/vBallLength);
-				
-				//angle
-				var rad:Number = (Math.acos(scalar / (vWallLength * vBallLength)));
-				var degree:Number = rad * (180 / Math.PI);
-				
-				direction.x = vWall.x - (vBall.x * Math.cos(rad)) - vBall.y * Math.sin(rad);
-				direction.y = vWall.y - (vBall.y * Math.sin(rad)) - vBall.y * Math.cos(rad);
-				
-				var vDirectionLength:Number = Math.sqrt(Math.pow(direction.x, 2) + Math.pow(direction.y, 2));
-				var vDirectionNorm:Point = new Point(direction.x/vDirectionLength, direction.y/vDirectionLength);
-				
-				var reflex:Point = new Point(vDirectionNorm.x - vBallNorm.x, vDirectionNorm.y - vBallNorm.y);
-				
-				return new Point(reflex.x * mVelocity, reflex.y * mVelocity);
+				return r;
 			}
 		}
 		

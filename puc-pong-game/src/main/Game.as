@@ -24,8 +24,9 @@ package main {
 		private var mArduino:Arduino;
 		private var mPlayerCount:int;
 		
-		// if true game is controlled by the mouse, if false its controlled by arduino
-		private var mMouseControl:Boolean = false;
+		// true: game controlled by mouse
+		// false: game controlled by arduino 
+		private var mMouseControl:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -48,7 +49,7 @@ package main {
 			mStage.addElement(mArea);
 			
 			//create pong ball
-			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,1));
+			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,10));
 			mStage.addElement(mBall);
 				
 			//create pads
@@ -88,6 +89,7 @@ package main {
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
+					trace(mBall.mDirection.x + " | " + mBall.mDirection.y );
 					mArea.markWallLastHit(wall);
 					markPadLastHit(null);
 				}
