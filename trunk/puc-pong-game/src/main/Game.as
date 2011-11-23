@@ -89,7 +89,7 @@ package main {
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
-					trace(mBall.mDirection.x + " | " + mBall.mDirection.y );
+					trace(wall.name + ": " + mBall.mDirection.x + " | " + mBall.mDirection.y );
 					mArea.markWallLastHit(wall);
 					markPadLastHit(null);
 				}

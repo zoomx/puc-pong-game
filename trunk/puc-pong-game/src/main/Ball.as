@@ -23,10 +23,11 @@ package main {
 		public var mRadius:int = 12;
 		
 		//velocity of the ball
-		public var mVelocity:int = 3;
+		public var mVelocity:int = 8;
 	
 		public function Ball(startX:int, startY:int, direction:Point) {
 			super();
+			direction = VectorAnalysis.normalize(direction);
 			this.mPosition = new Point(startX, startY);
 			this.mDirection = new Point(direction.x + mVelocity, direction.y + mVelocity);
 			createBall();
@@ -72,7 +73,7 @@ package main {
 
 				var angle:Number;
 				
-				if(wall.name == Wall.D1) angle = 225;
+				if(wall.name == Wall.D1) angle = 45;
 				else if(wall.name == Wall.D2) angle = 135;
 				else if(wall.name == Wall.D3) angle = 45;
 				else if(wall.name == Wall.D4) angle = 135;
@@ -90,7 +91,9 @@ package main {
 				var n:Point = VectorAnalysis.normalize(vWall); // normalized wall vector
 				var r:Point = VectorAnalysis.getReflectionVector(vBall, n); // reflection result vector
 				
-				return r;
+				n = VectorAnalysis.normalize(r);
+				
+				return new Point(n.x * mVelocity, n.y * mVelocity);
 			}
 		}
 		

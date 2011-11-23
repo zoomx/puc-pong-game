@@ -5,7 +5,7 @@
 					   showStatusBar="false"
 					   backgroundColor="0x1e1e1e"
 					   creationComplete="init()"
-					   frameRate="160">
+					   frameRate="60">
 	<fx:Declarations>
 
 	</fx:Declarations>
