@@ -80,7 +80,7 @@ package main{
 				return mLine.hitTestPoint(ball.mPosition.x - (ball.mRadius), ball.mPosition.y, true);
 			}
 			else if(name == Wall.D1){				 
-				return mLine.hitTestPoint(ball.mPosition.x  + (ball.mRadius), ball.mPosition.y  - (ball.mRadius), true);
+				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y, true);
 			}
 			else if(name == Wall.D2){
 				return mLine.hitTestPoint(ball.mPosition.x, ball.mPosition.y, true);

@@ -100,20 +100,34 @@ package main {
 		}
 		
 		public function setDirectionByPadHit(pad:Pad):Point{
-			if(pad.getWall() == Wall.H1){
-				return new Point(mDirection.x, -mDirection.y);;
+			
+			var angle:Number;
+			
+			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) angle = 30;
+			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2) angle = 60;
+			
+			var vPad:Point = new Point();
+			var vBall:Point = new Point();
+			
+			//determine pad vector
+			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) {
+				vPad = VectorAnalysis.getVector(pad.mWidth - pad.mX, angle);
 			}
-			else if(pad.getWall() == Wall.H2){
-				return new Point(mDirection.x, -mDirection.y);;
+			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2){
+				vPad = VectorAnalysis.getVector(pad.mHeight - pad.mY, angle);
 			}
-			else if(pad.getWall() == Wall.V1){
-				return new Point(-mDirection.x, mDirection.y);;
-			}
-			else if(pad.getWall() == Wall.V2){
-				return new Point(-mDirection.x, mDirection.y);;
-			}else{
-				return mDirection;
-			}
+			
+			//determine ball vector
+			vBall.x = mPosition.x - mLastPosition.x;
+			vBall.y = mPosition.y - mLastPosition.y;
+			
+			var n:Point = VectorAnalysis.normalize(vPad); // normalized pad vector
+			var r:Point = VectorAnalysis.getReflectionVector(vBall, n); // reflection result vector
+			
+			// normalize the reflection vector
+			n = VectorAnalysis.normalize(r);
+			
+			return new Point(n.x * mVelocity, n.y * mVelocity);
 		}
 	}
 }
