@@ -53,6 +53,7 @@ package main{
 			var wall:Wall = new Wall(startX, startY, stopX, stopY);
 			
 			wall.name = Wall.H1;
+			wall.mIsSolid = false;
 			addChild(wall);
 			mWalls.push(wall);
 			
@@ -82,6 +83,7 @@ package main{
 			stopY = startY + mWallLength;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V1;
+			wall.mIsSolid = false;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -106,6 +108,7 @@ package main{
 			stopY = startY;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.H2;
+			wall.mIsSolid = false;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -130,6 +133,7 @@ package main{
 			stopY = startY - mWallLength;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V2;
+			wall.mIsSolid = false;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
