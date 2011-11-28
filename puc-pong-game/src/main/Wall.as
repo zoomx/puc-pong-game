@@ -11,7 +11,7 @@ package main{
 	
 	public class Wall extends Sprite{
 		
-		private var mIsSolid:Boolean;
+		public var mIsSolid:Boolean;
 		private var mType:uint;
 		
 		public var mStartX:int;
@@ -37,10 +37,7 @@ package main{
 		public static var D2:String = "D2";
 		public static var D3:String = "D3";
 		public static var D4:String = "D4";
-		
-		public static var PLAYER_WALL:int = 0;
-		public static var NON_PLAYER_WALL:int = 1;
-		
+				
 		public function Wall(startX:int, startY:int, stopX:int, stopY:int){
 			super();
 			
