@@ -41,7 +41,7 @@ package main{
 		/* creates a pad made by a rectangle */
 		private function createPad():void{
 			mRect = new Shape();
-			mRect.graphics.beginFill(0x454545, 1.0);
+			mRect.graphics.beginFill(0xafafaf, 1.0);
 			mRect.graphics.drawRect(mX, mY, mWidth, mHeight);
 			mRect.graphics.endFill();
 			addChild(mRect);

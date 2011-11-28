@@ -29,9 +29,9 @@ package main {
 		public var PS3:int = 10;
 		public var PS4:int = 10;
 		
-		// true: game controlled by mouse
+		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = true;
+		private var mMouseControl:Boolean = false;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -54,7 +54,7 @@ package main {
 			mStage.addElement(mArea);
 			
 			//create pong ball
-			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,10));
+			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,20));
 			mStage.addElement(mBall);
 				
 			//create pads
@@ -77,36 +77,51 @@ package main {
 		}
 		
 		public function onEnterFrame(e:Event):void{
-			checkBoundaries();
+			hitTests();
 			mBall.moveBall();
 		}
 		
-		public function checkBoundaries():void{
-
+		/** function tests if the ball is hit by a pad or a wall **/
+		public function hitTests():void{
+			
+			var padHit:Boolean = false;
+			
+			//test if ball is hit by the ball
 			for each (var pad:Pad in mPads){
 				if(pad.hits(mBall)){
 					if(!pad.mLastHit)mBall.mDirection = mBall.setDirectionByPadHit(pad);
 					markPadLastHit(pad);
 					mArea.markWallLastHit(null);
+					padHit = true;
+					break;
 				}
 			}
 
+
+			//if ball is not hit by a pad test for the wall
+			if(!padHit){
+				wallHitTest();
+			}
+			
+		}
+		
+		public function wallHitTest():void{
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
 					//trace(wall.name + ": " + mBall.mDirection.x + " | " + mBall.mDirection.y );
 					if(wall.name == "H1") { 
-					PS1 --;
-					trace("PS1: " + PS1);
-
-					mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+						PS1 --;
+						trace("PS1: " + PS1);
+						
+						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
 					
 					if(wall.name == "H2") { 
-					PS3 --;
-					trace("PS3: " + PS3);
-
-					mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+						PS3 --;
+						trace("PS3: " + PS3);
+						
+						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
 					
 					if(wall.name == "V1") { 
@@ -114,7 +129,7 @@ package main {
 						trace("PS2: " + PS2);
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
-
+					
 					if(wall.name == "V2") { 
 						PS4 --;
 						
@@ -125,7 +140,8 @@ package main {
 					
 					mArea.markWallLastHit(wall);
 					markPadLastHit(null);
-				}
+					
+				}	
 			}
 		}
 		
