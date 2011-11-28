@@ -9,6 +9,7 @@ package main {
 	
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
+	import mx.states.RemoveChild;
 	
 	import net.eriksjodin.arduino.Arduino;
 	import net.eriksjodin.arduino.events.ArduinoEvent;
@@ -23,6 +24,10 @@ package main {
 		private var mPads:Vector.<Pad>;
 		private var mArduino:Arduino;
 		private var mPlayerCount:int;
+		public var PS1:int = 10;
+		public var PS2:int = 10;
+		public var PS3:int = 10;
+		public var PS4:int = 10;
 		
 		// true: game controlled by mouse
 		// false: game controlled by arduino 
@@ -89,7 +94,35 @@ package main {
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
-					trace(wall.name + ": " + mBall.mDirection.x + " | " + mBall.mDirection.y );
+					//trace(wall.name + ": " + mBall.mDirection.x + " | " + mBall.mDirection.y );
+					if(wall.name == "H1") { 
+					PS1 --;
+					trace("PS1: " + PS1);
+
+					mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+					}
+					
+					if(wall.name == "H2") { 
+					PS3 --;
+					trace("PS3: " + PS3);
+
+					mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+					}
+					
+					if(wall.name == "V1") { 
+						PS2 --;
+						trace("PS2: " + PS2);
+						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+					}
+
+					if(wall.name == "V2") { 
+						PS4 --;
+						
+						trace("PS4: " + PS4);
+						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+					}
+					
+					
 					mArea.markWallLastHit(wall);
 					markPadLastHit(null);
 				}

@@ -8,7 +8,7 @@ package main {
 	
 	public class Ball extends UIComponent{
 		
-		private var mCircle:Shape;
+		public var mCircle:Shape;
 		
 		//current poisiton of the ball
 		public var mPosition:Point;
@@ -33,7 +33,7 @@ package main {
 			createBall();
 		}
 		
-		private function createBall():void{
+		public function createBall():void{
 			mCircle = new Shape();
 			mCircle.graphics.beginFill(0xababab, 1.0);
 			mCircle.graphics.drawCircle(mPosition.x, mPosition.y, mRadius);
@@ -48,6 +48,8 @@ package main {
 			mPosition.y += mDirection.y;
 			createBall();
 		}
+
+		
 		
 		public function changeDirection(direction:Point):void{
 			mDirection = direction;
