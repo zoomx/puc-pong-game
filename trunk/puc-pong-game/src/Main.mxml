@@ -37,4 +37,6 @@
 	<s:BorderContainer id="STAGE" backgroundColor="0x1e1e1e" borderVisible="false">
 		
 	</s:BorderContainer>
+	
+	<s:TextArea id="SCORE_TABLE" contentBackgroundColor="0x1e1e1e" color="0xfefefe"/>
 </s:WindowedApplication>

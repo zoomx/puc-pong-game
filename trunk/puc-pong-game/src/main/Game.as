@@ -4,6 +4,7 @@ package main {
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.net.XMLSocket;
 	import flash.system.Security;
 	import flash.ui.Keyboard;
 	
@@ -24,14 +25,18 @@ package main {
 		private var mPads:Vector.<Pad>;
 		private var mArduino:Arduino;
 		private var mPlayerCount:int;
+		private var mSocketServer;
+		
 		public var PS1:int = 10;
 		public var PS2:int = 10;
 		public var PS3:int = 10;
 		public var PS4:int = 10;
 		
+		private var mScore:String = "Player 1: " + PS1 + "\n" + "Player 2: " + PS2 + "\n" + "Player 3: " + PS3 + "\n" + "Player 4: " + PS4;
+		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = false;
+		private var mMouseControl:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -39,6 +44,8 @@ package main {
 			mPlayerCount = playerCount;
 			
 			if(!mMouseControl){
+				mSocketServer = new XMLSocket();
+				mSocketServer.connect("127.0.0.1", 5331);
 				mArduino = new Arduino();
 				mArduino.addEventListener(Event.CONNECT, onArduinoConnect);
 			}else{
@@ -63,6 +70,8 @@ package main {
 			for(i=0; i < playerCount; i++){
 				createPad(i+1);
 			}
+			
+			updateScore();
 			
 			if(mMouseControl)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -113,20 +122,21 @@ package main {
 					if(wall.name == "H1") { 
 						PS1 --;
 						trace("PS1: " + PS1);
-						
+						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
 					
 					if(wall.name == "H2") { 
 						PS3 --;
 						trace("PS3: " + PS3);
-						
+						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
 					
 					if(wall.name == "V1") { 
 						PS2 --;
 						trace("PS2: " + PS2);
+						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
 					
@@ -134,6 +144,7 @@ package main {
 						PS4 --;
 						
 						trace("PS4: " + PS4);
+						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 					}
 					
@@ -143,6 +154,11 @@ package main {
 					
 				}	
 			}
+		}
+		
+		public function updateScore():void{
+			mScore = "Player 1: " + PS1 + "\n" + "Player 2: " + PS2 + "\n" + "Player 3: " + PS3 + "\n" + "Player 4: " + PS4;
+			FlexGlobals.topLevelApplication.SCORE_TABLE.text = mScore;
 		}
 		
 		public function markPadLastHit(pad:Pad):void{
@@ -163,10 +179,11 @@ package main {
 		}
 		
 		public function setUpArduino():void{
-			mArduino.setPinMode(1,Arduino.INPUT);
+		/*	mArduino.setPinMode(1,Arduino.INPUT);
 			mArduino.setPinMode(2,Arduino.INPUT);
 			mArduino.setPinMode(3,Arduino.INPUT);
 			mArduino.setPinMode(4,Arduino.INPUT);
+		*/	mArduino.setAnalogPinReporting(1, Arduino.INPUT);
 			mArduino.addEventListener(ArduinoEvent.ANALOG_DATA, onReceiveData);
 		}
 		
