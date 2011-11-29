@@ -3,17 +3,16 @@ package main {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
 	import flash.geom.Point;
+	import flash.net.Socket;
 	import flash.system.Security;
 	import flash.ui.Keyboard;
 	
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.states.RemoveChild;
-	
-	import net.eriksjodin.arduino.Arduino;
-	import net.eriksjodin.arduino.events.ArduinoEvent;
-	
+		
 	import spark.components.BorderContainer;
 	
 	public class Game{
@@ -22,13 +21,13 @@ package main {
 		private var mArea:GameArea;
 		private var mStage:BorderContainer;
 		private var mPads:Vector.<Pad>;
-		private var mArduino:Arduino;
 		private var mPlayerCount:int;
+		private var mArduinoSocket:Socket;
 		
-		public var PS1:int = 10;
-		public var PS2:int = 10;
-		public var PS3:int = 10;
-		public var PS4:int = 10;
+		public var PS1:int;
+		public var PS2:int;
+		public var PS3:int;
+		public var PS4:int;
 		
 		private var mScore:String = "Player 1: " + PS1 + "\n" + 
 									"Player 2: " + PS2 + "\n" + 
@@ -44,12 +43,9 @@ package main {
 			mStage = stage;
 			mPlayerCount = playerCount;
 			
-			if(!mMouseControl){
-				mArduino = new Arduino();
-				mArduino.addEventListener(Event.CONNECT, onArduinoConnect);
-			}else{
-				createNewGame(mPlayerCount);
-			}
+			if(!mMouseControl) setUpArduino();
+			
+			createNewGame(mPlayerCount);
 		}
 		
 		/* creates a new game with the ball, pads and the game area*/
@@ -70,13 +66,16 @@ package main {
 				createPad(i+1);
 			}
 			
+			PS1 = 10;
+			PS2 = 10;
+			PS3 = 10;
+			PS4 = 10;
+			
 			updateScore();
 			
 			if(mMouseControl)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
-		
-	
 		
 		private function onMouseMove(e:MouseEvent):void{
 			for each (var pad:Pad in mPads){
@@ -201,16 +200,16 @@ package main {
 		}
 		
 		public function setUpArduino():void{
-			mArduino.setPinMode(1,Arduino.INPUT);
-			mArduino.setPinMode(2,Arduino.INPUT);
-			mArduino.setPinMode(3,Arduino.INPUT);
-			mArduino.setPinMode(4,Arduino.INPUT);
-			
-			mArduino.addEventListener(ArduinoEvent.ANALOG_DATA, onReceiveData);
-
+			mArduinoSocket = new Socket();
+			mArduinoSocket.connect("127.0.0.1", 5331);
+			mArduinoSocket.addEventListener(ProgressEvent.SOCKET_DATA, onReceiveData);
 		}
 		
-		public function onReceiveData(e:ArduinoEvent):void{
+		public function onReceiveData(e:ProgressEvent):void{
+			var s:uint = mArduinoSocket.readUnsignedByte();
+			trace(s);
+		}
+/*
 			if(e.pin == 1 || e.pin == 2 || e.pin == 3 || e.pin == 4){
 				trace("Analog pin " + e.pin + " on port: " + e.port +" = " + e.value);
 				
@@ -237,7 +236,7 @@ package main {
 				}
 			}
 		}
-		
+	*/	
 		/* function maps the sensor value (0 - 1023) to the position of the pad and returns it*/
 		public function mapSensorValue(value:int, pin:int, wall:String):int{
 			var max:Number = 1024;
@@ -252,12 +251,7 @@ package main {
 
 			return wallPos + position;
 		}
-		
-		private function onArduinoConnect(e:Event):void{
-			setUpArduino();
-			createNewGame(mPlayerCount);
-		}
-		
+				
 		private function createPad(playerId:int):void{
 			var x:int;
 			var y:int;
