@@ -96,6 +96,7 @@ package main {
 			mBall.moveBall();
 		}
 		
+		
 		/** function tests if the ball is hit by a pad or a wall **/
 		public function hitTests():void{
 			
