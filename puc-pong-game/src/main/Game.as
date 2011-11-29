@@ -8,11 +8,12 @@ package main {
 	import flash.net.Socket;
 	import flash.system.Security;
 	import flash.ui.Keyboard;
+	import flash.ui.Mouse;
 	
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.states.RemoveChild;
-		
+	
 	import spark.components.BorderContainer;
 	
 	public class Game{
@@ -36,7 +37,7 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = false;
+		private var mMouseControl:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -56,6 +57,7 @@ package main {
 			mStage.addElement(mArea);
 			
 			//create pong ball
+
 			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,20));
 			mStage.addElement(mBall);
 				
@@ -77,6 +79,11 @@ package main {
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
+
+		//mBall.mVelocity = 8 + (mouseX / 80);
+
+
+		
 		private function onMouseMove(e:MouseEvent):void{
 			for each (var pad:Pad in mPads){
 				pad.movePadByMouse(e.localX, e.localY);
@@ -85,6 +92,7 @@ package main {
 		
 		public function onEnterFrame(e:Event):void{
 			hitTests();
+			mBall.mVelocity = 8 + (mBall.mouseX /100);
 			mBall.moveBall();
 		}
 		

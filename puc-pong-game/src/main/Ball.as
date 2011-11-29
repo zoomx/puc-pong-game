@@ -1,5 +1,6 @@
 package main {
 	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.geom.Point;
 	
 	import math.VectorAnalysis;
@@ -26,6 +27,7 @@ package main {
 		public var mVelocity:int = 8;
 	
 		public function Ball(startX:int, startY:int, direction:Point) {
+		
 			super();
 			direction = VectorAnalysis.normalize(direction);
 			this.mPosition = new Point(startX, startY);
@@ -33,6 +35,9 @@ package main {
 			createBall();
 		}
 		
+
+
+
 		public function createBall():void{
 			mCircle = new Shape();
 			mCircle.graphics.beginFill(0xababab, 1.0);
@@ -46,6 +51,7 @@ package main {
 			mLastPosition = mPosition.clone();
 			mPosition.x += mDirection.x;
 			mPosition.y += mDirection.y;
+
 			createBall();
 		}
 
