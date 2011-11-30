@@ -1,18 +1,12 @@
 package main {
-	import flash.display.FrameLabel;
 	import flash.events.Event;
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.geom.Point;
 	import flash.net.Socket;
-	import flash.system.Security;
-	import flash.ui.Keyboard;
-	import flash.ui.Mouse;
+	import flash.utils.ByteArray;
 	
 	import mx.core.FlexGlobals;
-	import mx.core.UIComponent;
-	import mx.states.RemoveChild;
 	
 	import spark.components.BorderContainer;
 	
@@ -24,6 +18,7 @@ package main {
 		private var mPads:Vector.<Pad>;
 		private var mPlayerCount:int;
 		private var mArduinoSocket:Socket;
+		private var mPoints:int = 1;
 		
 		public var PS1:int;
 		public var PS2:int;
@@ -68,10 +63,10 @@ package main {
 				createPad(i+1);
 			}
 			
-			PS1 = 10;
-			PS2 = 10;
-			PS3 = 10;
-			PS4 = 10;
+			PS1 = mPoints;
+			PS2 = mPoints;
+			PS3 = mPoints;
+			PS4 = mPoints;
 			
 			updateScore();
 			
@@ -184,11 +179,15 @@ package main {
 		private function removePlayer(wall:Wall):void{
 			wall.mIsSolid = true;
 			var pad:Pad;
+			var tempVec:Vector.<Pad> = new Vector.<Pad>();
 			for each(pad in mPads){
 				if(pad.getWall() == wall.name){
 					mStage.removeElement(pad);
+				}else{
+					tempVec.push(pad);
 				}
 			}
+			mPads = tempVec;
 		}
 		
 		public function markPadLastHit(pad:Pad):void{
@@ -214,43 +213,80 @@ package main {
 			mArduinoSocket.addEventListener(ProgressEvent.SOCKET_DATA, onReceiveData);
 		}
 		
+		private var lastValue:int;
 		public function onReceiveData(e:ProgressEvent):void{
-			var s:uint = mArduinoSocket.readUnsignedByte();
-			trace(s);
-		}
-/*
-			if(e.pin == 1 || e.pin == 2 || e.pin == 3 || e.pin == 4){
-				trace("Analog pin " + e.pin + " on port: " + e.port +" = " + e.value);
+			var byteArr:ByteArray = new ByteArray();
+			var pad:Pad;
+			var value:int;
+			var i:int;
+			
+			mArduinoSocket.readBytes(byteArr, 0, 0);
+			
+			for(i=0; i<byteArr.length; i++){
 				
-				var pad:Pad;
-				if(e.pin == 1){
+				var pin:int;
+				if(i%2 == 0){
+					pin = byteArr[i];
+				}else{
+					pin = -1;
+				}
+				
+				
+				if(pin == 0){
 					for each (pad in mPads){
-						if(pad.getWall() == Wall.H1) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+						trace("Player: " + byteArr[i]);
+						if(pad.getWall() == Wall.H1){
+						 	value = byteArr[i+1];
+							if(value != lastValue){
+								pad.movePad(mapSensorValue(value, Wall.H1));
+								lastValue = value;
+							}
+							
+							i++;
+							break;
+						} 
+					}	
+				}
+		/*		else if(pin == 1){
+					for each (pad in mPads){
+						trace("Player: " + byteArr[i]);
+						if(pad.getWall() == Wall.V1){
+							pad.movePad(mapSensorValue(byteArr[i+1], pad.getWall()));
+							i++;
+							break;
+						} 
 					}
 				}
-				else if(e.pin == 2){
+				else if(pin == 2){
 					for each (pad in mPads){
-						if(pad.getWall() == Wall.V1) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+						trace("Player: " + byteArr[i]);
+						if(pad.getWall() == Wall.H2){
+							pad.movePad(mapSensorValue(byteArr[i+1], pad.getWall()));
+							i++;
+							break;
+						} 
 					}
 				}
-				else if(e.pin == 3){
+				else if(pin == 3){
 					for each (pad in mPads){
-						if(pad.getWall() == Wall.H2) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
+						trace("Player: " + byteArr[i]);
+						if(pad.getWall() == Wall.V2){
+							pad.movePad(mapSensorValue(byteArr[i+1], pad.getWall()));
+							i++;
+							break;
+						} 
 					}
-				}
-				else if(e.pin == 4){
-					for each (pad in mPads){
-						if(pad.getWall() == Wall.V2) pad.movePad(mapSensorValue(e.value, e.pin, pad.getWall()));
-					}
-				}
-			}
+				} 
+		*/	}
 		}
-	*/	
-		/* function maps the sensor value (0 - 1023) to the position of the pad and returns it*/
-		public function mapSensorValue(value:int, pin:int, wall:String):int{
-			var max:Number = 1024;
+
+		/* function maps the sensor value (0 - 255) to the position of the pad and returns it*/
+		public function mapSensorValue(value:int, wall:String):int{
+			trace("Value: " + value);
+			var max:Number = 255;
 			var length:Number = mArea.mWallLength;
-			var position:Number = (length / 1024) * value;
+			var position:Number = (length / max) * value;
+			trace("Position: " + position);
 			
 			var wallPos:int
 			if(wall == Wall.H1) wallPos = mArea.getWall(wall).mStartX;
