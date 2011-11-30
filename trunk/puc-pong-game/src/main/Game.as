@@ -87,7 +87,7 @@ package main {
 		
 		public function onEnterFrame(e:Event):void{
 			hitTests();
-			mBall.mVelocity = 8 + (mBall.mouseX /100);
+			mBall.mVelocity = 8 + (mBall.mouseX / 100);
 			mBall.moveBall();
 		}
 		

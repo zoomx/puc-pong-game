@@ -51,7 +51,7 @@ package main{
 		
 		public function createWall():void{
 			mLine = new Shape();
-			mLine.graphics.lineStyle(12, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+			mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
 			mLine.graphics.moveTo(mStartX, mStartY);
 			mLine.graphics.lineTo(mStopX, mStopY);
 			addChild(mLine);
