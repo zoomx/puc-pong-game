@@ -3,6 +3,7 @@ package main{
 	import flash.display.CapsStyle;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.geom.Point;
 	
 	import mx.containers.utilityClasses.PostScaleAdapter;
@@ -47,6 +48,9 @@ package main{
 			this.mStopY = stopY;
 			
 			createWall();
+			
+			//comment this line to have a "normal" game 
+			addEventListener(Event.ENTER_FRAME, changeWalls);
 		}
 		
 		public function createWall():void{
@@ -57,6 +61,25 @@ package main{
 			addChild(mLine);
 		}
 		
+		public function changeWalls(e:Event):void {
+			if(mLine != null && contains(mLine)){
+				removeChild(mLine);
+			}
+			if(name == Wall.D1 || name == Wall.D2 || name == Wall.D3 || name == Wall.D4){
+				mLine = new Shape();
+				mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+				mLine.graphics.moveTo(mStartX, mStartY);
+				mLine.graphics.curveTo(mouseX, mouseY, mStopX, mStopY);
+				addChild(mLine);
+			} else { 
+				mLine = new Shape();
+				mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+				mLine.graphics.moveTo(mStartX, mStartY);
+				mLine.graphics.lineTo(mStopX, mStopY);
+				addChild(mLine);
+				
+			}
+		}
 		public function getWall():Sprite{
 			return this;
 		}
