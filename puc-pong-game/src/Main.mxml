@@ -38,5 +38,5 @@
 		
 	</s:BorderContainer>
 	
-	<s:TextArea id="SCORE_TABLE" contentBackgroundColor="0x1e1e1e" color="0xfefefe" borderColor="0x1e1e1e" fontSize="16" fontFamily="Verdana"/>
+	<s:TextArea id="SCORE_TABLE" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" borderVisible="false" fontSize="16" fontFamily="Verdana"/>
 </s:WindowedApplication>
