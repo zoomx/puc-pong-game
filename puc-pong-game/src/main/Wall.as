@@ -50,7 +50,7 @@ package main{
 			createWall();
 			
 			//comment this line to have a "normal" game 
-			addEventListener(Event.ENTER_FRAME, changeWalls);
+			//addEventListener(Event.ENTER_FRAME, changeWalls);
 		}
 		
 		public function createWall():void{
