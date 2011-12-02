@@ -18,7 +18,7 @@ package main {
 		private var mPads:Vector.<Pad>;
 		private var mPlayerCount:int;
 		private var mArduinoSocket:Socket;
-		private var mPoints:int = 1;
+		private var mPoints:int = 10;
 		
 		public var PS1:int;
 		public var PS2:int;
@@ -32,7 +32,7 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = true;
+		private var mMouseControl:Boolean = false;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -74,11 +74,6 @@ package main {
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
-
-		//mBall.mVelocity = 8 + (mouseX / 80);
-
-
-		
 		private function onMouseMove(e:MouseEvent):void{
 			for each (var pad:Pad in mPads){
 				pad.movePadByMouse(e.localX, e.localY);
@@ -90,8 +85,7 @@ package main {
 			mBall.mVelocity = 8 + (mBall.mouseX / 100);
 			mBall.moveBall();
 		}
-		
-		
+			
 		/** function tests if the ball is hit by a pad or a wall **/
 		public function hitTests():void{
 			
@@ -213,80 +207,62 @@ package main {
 			mArduinoSocket.addEventListener(ProgressEvent.SOCKET_DATA, onReceiveData);
 		}
 		
-		private var lastValue:int;
 		public function onReceiveData(e:ProgressEvent):void{
-			var byteArr:ByteArray = new ByteArray();
-			var pad:Pad;
-			var value:int;
+			var bytes:ByteArray = new ByteArray();
+			mArduinoSocket.readBytes(bytes,0,0);
 			var i:int;
-			
-			mArduinoSocket.readBytes(byteArr, 0, 0);
-			
-			for(i=0; i<byteArr.length; i++){
-				
-				var pin:int;
-				if(i%2 == 0){
-					pin = byteArr[i];
-				}else{
-					pin = -1;
-				}
-				
-				
-				if(pin == 0){
-					for each (pad in mPads){
-						trace("Player: " + byteArr[i]);
-						if(pad.getWall() == Wall.H1){
-						 	value = byteArr[i+1];
-							if(value != lastValue){
-								pad.movePad(mapSensorValue(value, Wall.H1));
-								lastValue = value;
-							}
-							
-							i++;
-							break;
-						} 
-					}	
-				}
-		/*		else if(pin == 1){
-					for each (pad in mPads){
-						trace("Player: " + byteArr[i]);
-						if(pad.getWall() == Wall.V1){
-							pad.movePad(mapSensorValue(byteArr[i+1], pad.getWall()));
-							i++;
-							break;
-						} 
-					}
-				}
-				else if(pin == 2){
-					for each (pad in mPads){
-						trace("Player: " + byteArr[i]);
-						if(pad.getWall() == Wall.H2){
-							pad.movePad(mapSensorValue(byteArr[i+1], pad.getWall()));
-							i++;
-							break;
-						} 
-					}
-				}
-				else if(pin == 3){
-					for each (pad in mPads){
-						trace("Player: " + byteArr[i]);
-						if(pad.getWall() == Wall.V2){
-							pad.movePad(mapSensorValue(byteArr[i+1], pad.getWall()));
-							i++;
-							break;
-						} 
-					}
-				} 
-		*/	}
+			for(i=0; i<bytes.length; i++){
+				processData(bytes[i], bytes[i+1]);
+	//			trace(bytes[i]);
+	//			trace(bytes[i+1]);
+				i++;
+			}
 		}
 
+		private function processData(pin:int, data:int):void{
+			
+			var pad:Pad;
+			if(pin == 0){
+				for each (pad in mPads){
+					if(pad.getWall() == Wall.H1){
+						//trace(pin);
+						trace(data);
+						pad.movePad(mapSensorValue(data, pad.getWall()));
+						break;
+					} 
+				}	
+			}
+			else if(pin == 1){
+				for each (pad in mPads){
+					if(pad.getWall() == Wall.V1){
+						pad.movePad(mapSensorValue(data, pad.getWall()));
+						break;
+					} 
+				}
+			}
+			else if(pin == 2){
+				for each (pad in mPads){
+					if(pad.getWall() == Wall.H2){
+						pad.movePad(mapSensorValue(data, pad.getWall()));
+						break;
+					} 
+				}
+			}
+			else if(pin == 3){
+				for each (pad in mPads){
+					if(pad.getWall() == Wall.V2){
+						pad.movePad(mapSensorValue(data, pad.getWall()));
+						break;
+					} 
+				}
+			}
+		}
+	
 		/* function maps the sensor value (0 - 255) to the position of the pad and returns it*/
 		public function mapSensorValue(value:int, wall:String):int{
-			trace("Value: " + value);
 			var max:Number = 255;
 			var length:Number = mArea.mWallLength;
 			var position:Number = (length / max) * value;
-			trace("Position: " + position);
 			
 			var wallPos:int
 			if(wall == Wall.H1) wallPos = mArea.getWall(wall).mStartX;
