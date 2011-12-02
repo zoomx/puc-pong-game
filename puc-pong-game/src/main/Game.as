@@ -32,7 +32,7 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = false;
+		private var mMouseControl:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			

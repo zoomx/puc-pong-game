@@ -63,7 +63,7 @@ package main{
 			xPos = startX;	
 			yPos = startY;
 			mY = startY;
-			
+			trace(startX + "," + startY);
 			/* create D1 line */
 			startX = stopX;
 			startY = stopY;
@@ -75,7 +75,7 @@ package main{
 			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY);
-			
+
 			/* create V1 line */
 			startX = stopX;
 			startY = stopY;
@@ -88,7 +88,7 @@ package main{
 			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(stopX, stopY);
-			
+		
 			/* create D2 line */
 			startX = stopX;
 			startY = stopY;
@@ -151,7 +151,7 @@ package main{
 			mWalls.push(wall);
 			commands.push(2,2);
 			coords.push(xPos, yPos); 
-			
+	
 			drawOctagon(commands, coords);
 		}
 		
