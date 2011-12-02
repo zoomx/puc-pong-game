@@ -213,8 +213,6 @@ package main {
 			var i:int;
 			for(i=0; i<bytes.length; i++){
 				processData(bytes[i], bytes[i+1]);
-	//			trace(bytes[i]);
-	//			trace(bytes[i+1]);
 				i++;
 			}
 		}
@@ -227,7 +225,7 @@ package main {
 					if(pad.getWall() == Wall.H1){
 						//trace(pin);
 						trace(data);
-						pad.movePad(mapSensorValue(data, pad.getWall()));
+						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}	
@@ -235,7 +233,7 @@ package main {
 			else if(pin == 1){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.V1){
-						pad.movePad(mapSensorValue(data, pad.getWall()));
+						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}
@@ -243,7 +241,7 @@ package main {
 			else if(pin == 2){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.H2){
-						pad.movePad(mapSensorValue(data, pad.getWall()));
+						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}
@@ -251,7 +249,7 @@ package main {
 			else if(pin == 3){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.V2){
-						pad.movePad(mapSensorValue(data, pad.getWall()));
+						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}
