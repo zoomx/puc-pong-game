@@ -19,6 +19,7 @@ package main {
 		private var mPlayerCount:int;
 		private var mArduinoSocket:Socket;
 		private var mPoints:int = 10;
+		private var mPadSize:int = 120;
 		
 		public var PS1:int;
 		public var PS2:int;
@@ -32,7 +33,7 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = true;
+		private var mMouseControl:Boolean = false;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -210,22 +211,27 @@ package main {
 		public function onReceiveData(e:ProgressEvent):void{
 			var bytes:ByteArray = new ByteArray();
 			mArduinoSocket.readBytes(bytes,0,0);
+			
+			//sometimes we get odd number of bytes which causes that 0 values are delivered for the data variable although it isnt its value
+			//to prevent this we make that even numbers are processed (the last byte is cut when odd numbers are received)
+			var numBytes:uint = bytes.length;
+			if(numBytes%2 != 0) numBytes -= 1;
+			
 			var i:int;
-			for(i=0; i<bytes.length; i++){
+			for(i=0; i<numBytes; i++){
 				processData(bytes[i], bytes[i+1]);
 				i++;
 			}
 		}
 
 		private function processData(pin:int, data:int):void{
-			
+			trace("Pin:  " + pin);
+			trace("Data: " + data);
 			var pad:Pad;
 			if(pin == 0){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.H1){
-						//trace(pin);
-						trace(data);
-						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
+						pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}	
@@ -233,7 +239,7 @@ package main {
 			else if(pin == 1){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.V1){
-						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
+						pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}
@@ -241,7 +247,7 @@ package main {
 			else if(pin == 2){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.H2){
-						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
+						pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}
@@ -249,7 +255,7 @@ package main {
 			else if(pin == 3){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.V2){
-						if(data > 3)pad.movePad(mapSensorValue(data, pad.getWall()));
+						pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
 				}
@@ -260,13 +266,15 @@ package main {
 		public function mapSensorValue(value:int, wall:String):int{
 			var max:Number = 255;
 			var length:Number = mArea.mWallLength;
-			var position:Number = (length / max) * value;
+			var position:Number = Math.max(0, ((length / max) * value) - mPadSize);
 			
 			var wallPos:int
-			if(wall == Wall.H1) wallPos = mArea.getWall(wall).mStartX;
-			else if(wall == Wall.H2) wallPos = mArea.getWall(wall).mStopX;
-			else if(wall == Wall.V1) wallPos = mArea.getWall(wall).mStartY;
-			else if(wall == Wall.V2) wallPos = mArea.getWall(wall).mStopY;
+			var w:Wall = mArea.getWall(wall);
+			
+			if(w.name == Wall.H1) wallPos = w.mStartX;
+			else if(w.name == Wall.H2) wallPos = w.mStopX;
+			else if(w.name == Wall.V1) wallPos = w.mStartY;
+			else if(w.name == Wall.V2) wallPos = w.mStopY;
 
 			return wallPos + position;
 		}
