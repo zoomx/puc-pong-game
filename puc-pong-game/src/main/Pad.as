@@ -104,5 +104,10 @@ package main{
 		public function hits(ball:Ball):Boolean{
 			return mRect.hitTestObject(ball);
 		}
+		
+		public  function getPadSize(wall:String):int{
+			if(wall == Wall.H1 || wall == Wall.H2) return mWidth;
+			else return mHeight;
+		}
 	}
 }
