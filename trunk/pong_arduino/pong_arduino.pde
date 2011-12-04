@@ -35,45 +35,19 @@ int A04_Average = 0;
 
 void setup() {
   Serial.begin(57600);
-  for (int i = 0; i < NUM_READINGS; i++)
+  for (int i = 0; i < NUM_READINGS; i++){
     A01Readings[i] = 0;
+    A02Readings[i] = 0;
+    A03Readings[i] = 0;
+    A04Readings[i] = 0;
+  }
 }
 
 void readAnalogValues(){
-/*  
-    int value = analogRead(A1) / 4;
-    if(A01Readings[index-1] - value < 128){
-      A01Readings[index] = value;
-    }else{
-      A01Readings[index] = A01Readings[index-1];
-    }
-    
-    value = analogRead(A2) / 4;
-    if(A02Readings[index-1] - value < 128){
-      A02Readings[index] = value;
-    }else{
-      A02Readings[index] = A02Readings[index-1];
-    }
-    
-    value = analogRead(A3) / 4;
-    if(A03Readings[index-1] - value < 128){
-      A03Readings[index] = value;
-    }else{
-      A03Readings[index] = A03Readings[index-1];
-    }
-    
-    value = analogRead(A4) / 4;
-    if(A04Readings[index-1] - value < 128){
-      A04Readings[index] = value;
-    }else{
-      A04Readings[index] = A04Readings[index-1];
-    }
-*/    
     A01Readings[index] = analogRead(A1) / 4;  //read analog pin 1 (1st player)
     A02Readings[index] = analogRead(A2) / 4;  //read analog pin 2 (2nd player)
     A03Readings[index] = analogRead(A3) / 4;  //read analog pin 3 (3rd player)
     A04Readings[index] = analogRead(A4) / 4;  //read analog pin 4 (4th player)
-
 }
 
 void loop() {    
@@ -106,7 +80,7 @@ void loop() {
     
     Serial.write(A01); 
     Serial.write(A01_Average);
-    
+   
     Serial.write(A02); 
     Serial.write(A02_Average); 
     
