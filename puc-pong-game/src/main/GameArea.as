@@ -157,7 +157,7 @@ package main{
 		
 		private function drawOctagon(commands:Vector.<int>, coords:Vector.<Number>):void{
 			mOctagon = new Shape();
-			mOctagon.graphics.beginFill(0x292929); 
+			mOctagon.graphics.beginFill(0x1e1e1e); 
 			mOctagon.graphics.drawPath(commands, coords);
 			mOctagon.name = "AREA";
 			addChildAt(mOctagon, 0);
