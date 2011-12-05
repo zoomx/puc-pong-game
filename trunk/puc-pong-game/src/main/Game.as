@@ -33,14 +33,14 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		private var mMouseControl:Boolean = false;
+		public static var MOUSE_CONTROL:Boolean = false;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
 			mStage = stage;
 			mPlayerCount = playerCount;
 			
-			if(!mMouseControl) setUpArduino();
+			if(!MOUSE_CONTROL) setUpArduino();
 			
 			createNewGame(mPlayerCount);
 		}
@@ -71,7 +71,7 @@ package main {
 			
 			updateScore();
 			
-			if(mMouseControl)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			if(MOUSE_CONTROL)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
@@ -227,7 +227,10 @@ package main {
 		private function processData(pin:int, data:int):void{
 			trace("Pin:  " + pin);
 			trace("Data: " + data);
+			
 			var pad:Pad;
+			var wall:Wall;
+			
 			if(pin == 0){
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.H1){
@@ -258,6 +261,13 @@ package main {
 						pad.movePad(mapSensorValue(data, pad.getWall()));
 						break;
 					} 
+				}
+			}
+			else if(pin == 4){
+				for each (wall in mArea.mWalls){
+					if(wall.name == Wall.D1 || wall.name == Wall.D2 || wall.name == Wall.D3 || wall.name == Wall.D4){
+						wall.bendWall(data);
+					}
 				}
 			}
 		}

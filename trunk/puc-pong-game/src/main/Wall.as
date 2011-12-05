@@ -4,6 +4,7 @@ package main{
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
 	import mx.containers.utilityClasses.PostScaleAdapter;
@@ -38,6 +39,8 @@ package main{
 		public static var D2:String = "D2";
 		public static var D3:String = "D3";
 		public static var D4:String = "D4";
+		
+		public static var MIN_VOLUME:int = 70;
 				
 		public function Wall(startX:int, startY:int, stopX:int, stopY:int){
 			super();
@@ -50,7 +53,8 @@ package main{
 			createWall();
 			
 			//comment this line to have a "normal" game 
-			//addEventListener(Event.ENTER_FRAME, changeWalls);
+			if(Game.MOUSE_CONTROL)addEventListener(Event.ENTER_FRAME, changeWalls);
+			
 		}
 		
 		public function createWall():void{
@@ -59,38 +63,33 @@ package main{
 			mLine.graphics.moveTo(mStartX, mStartY);
 			mLine.graphics.lineTo(mStopX, mStopY);
 			addChild(mLine);
-
 		}
 		
-		public function changeWalls(e:Event):void {
+		private function changeWalls(e:Event):void{
+			bendWall(mouseY/8);
+		}
+				
+		public function bendWall(val:int):void {
 			if(mLine != null && contains(mLine)){
 				removeChild(mLine);
 			}
-			if(name == Wall.D1 || name == Wall.D2 || name == Wall.D3 || name == Wall.D4){
+			
+			if(val > Wall.MIN_VOLUME){
 				mLine = new Shape();
 				mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
 				mLine.graphics.moveTo(mStartX, mStartY);
-				if(name == Wall.D1){
-				mLine.graphics.curveTo(848+(0.139*mouseY), 303-(0.139*mouseY), mStopX, mStopY);
-				}
-				else if(name == Wall.D2){
-				mLine.graphics.curveTo(848+(0.139*mouseY), 720+(0.139*mouseY), mStopX, mStopY);	
-				}
-				else if(name == Wall.D3){
-				mLine.graphics.curveTo(430-(0.139*mouseY), 720+(0.139*mouseY), mStopX, mStopY);	
-				}
-				else if(name == Wall.D4){
-				mLine.graphics.curveTo(430-(0.139*mouseY), 303-(0.139*mouseY), mStopX, mStopY);	
-				}
-				addChild(mLine);
-			} else { 
-				mLine = new Shape();
-				mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
-				mLine.graphics.moveTo(mStartX, mStartY);
-				mLine.graphics.lineTo(mStopX, mStopY);
-				addChild(mLine);
 				
+				if(name == Wall.D1 || name == Wall.D3){
+					mLine.graphics.curveTo(mStartX+(0.5*val), mStopY-(0.5*val), mStopX, mStopY);
+				}
+				else if(name == Wall.D2 || name == Wall.D4){
+					mLine.graphics.curveTo(mStopX+(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
+				}else{
+					createWall();
+				}
 			}
+
+			addChild(mLine);
 		}
 		public function getWall():Sprite{
 			return this;
