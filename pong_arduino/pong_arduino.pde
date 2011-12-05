@@ -1,8 +1,3 @@
-int analog01 = 0;    // 1st analog sensor
-int analog02 = 0;    // 2nd analog sensor
-int analog03 = 0;    // 3rd analog sensor
-int analog04 = 0;    // 4th analog sensor
-
 //pad identification bytes
 byte A01 = B000;
 byte A02 = B001;
@@ -21,17 +16,20 @@ int A01Readings[NUM_READINGS];
 int A02Readings[NUM_READINGS];
 int A03Readings[NUM_READINGS];
 int A04Readings[NUM_READINGS];
+int A05Readings[NUM_READINGS];
 
 int index = 0; 
 int A01_Total = 0; 
 int A02_Total = 0; 
 int A03_Total = 0; 
 int A04_Total = 0; 
+int A05_Total = 0; 
 
 int A01_Average = 0; 
 int A02_Average = 0; 
 int A03_Average = 0; 
-int A04_Average = 0; 
+int A04_Average = 0;
+int A05_Average = 0; 
 
 void setup() {
   Serial.begin(57600);
@@ -40,6 +38,7 @@ void setup() {
     A02Readings[i] = 0;
     A03Readings[i] = 0;
     A04Readings[i] = 0;
+    A05Readings[i] = 0;
   }
 }
 
@@ -48,6 +47,7 @@ void readAnalogValues(){
     A02Readings[index] = analogRead(A2) / 4;  //read analog pin 2 (2nd player)
     A03Readings[index] = analogRead(A3) / 4;  //read analog pin 3 (3rd player)
     A04Readings[index] = analogRead(A4) / 4;  //read analog pin 4 (4th player)
+    A05Readings[index] = analogRead(A5);      //read analog pin 5 (1st mic)
 }
 
 void loop() {    
@@ -56,6 +56,7 @@ void loop() {
     A02_Total = A02_Total - A02Readings[index];
     A03_Total = A03_Total - A03Readings[index];
     A04_Total = A04_Total - A04Readings[index];
+    A05_Total = A05_Total - A05Readings[index];
     
     // read from the sensors
     readAnalogValues();
@@ -65,6 +66,7 @@ void loop() {
     A02_Total = A02_Total + A02Readings[index]; 
     A03_Total = A03_Total + A03Readings[index]; 
     A04_Total = A04_Total + A04Readings[index]; 
+    A05_Total = A05_Total + A05Readings[index]; 
     
     // advance to the next position in the array:  
     index++;
@@ -77,6 +79,7 @@ void loop() {
     A02_Average = A02_Total / NUM_READINGS; 
     A03_Average = A03_Total / NUM_READINGS; 
     A04_Average = A04_Total / NUM_READINGS; 
+    A05_Average = A05_Total / NUM_READINGS; 
     
     Serial.write(A01); 
     Serial.write(A01_Average);
@@ -89,6 +92,9 @@ void loop() {
     
     Serial.write(A04); 
     Serial.write(A04_Average); 
+  
+    Serial.write(A05);
+    Serial.write(A05_Average);
     
     delay(50);
 }
