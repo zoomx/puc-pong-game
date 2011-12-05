@@ -57,7 +57,7 @@ package main{
 			
 		}
 		
-		public function createWall():void{
+		private function createWall():void{
 			mLine = new Shape();
 			mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
 			mLine.graphics.moveTo(mStartX, mStartY);
@@ -65,10 +65,12 @@ package main{
 			addChild(mLine);
 		}
 		
+		//only used with mouse control (test function)
 		private function changeWalls(e:Event):void{
 			bendWall(mouseY/8);
 		}
-				
+			
+		//bends the wall according to the received volume value
 		public function bendWall(val:int):void {
 			if(mLine != null && contains(mLine)){
 				removeChild(mLine);

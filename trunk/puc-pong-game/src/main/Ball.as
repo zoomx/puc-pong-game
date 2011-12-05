@@ -46,6 +46,7 @@ package main {
 			addChild(mCircle);
 		}
 		
+		//moves the ball to a specific position
 		public function moveBall():void{
 			removeChild(mCircle);
 			mLastPosition = mPosition.clone();
@@ -54,17 +55,18 @@ package main {
 
 			createBall();
 		}
-
 		
-		
-		public function changeDirection(direction:Point):void{
+		//changes the direction of the ball
+		private function changeDirection(direction:Point):void{
 			mDirection = direction;
 		}
 		
+		//returns the ball object
 		public function getBall():UIComponent{
 			return this;
 		}
 		
+		//calculates and sets a new direction for the ball if it hits a wall
 		public function setNewDirection(wall:Wall):Point{
 			if(wall.name == Wall.H1){
 				return new Point(mDirection.x, -mDirection.y);;
@@ -105,6 +107,7 @@ package main {
 			}
 		}
 		
+		//calculates and sets a new direction for the ball if it hits a pad
 		public function setDirectionByPadHit(pad:Pad):Point{
 			
 			var angle:Number;

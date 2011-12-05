@@ -81,14 +81,14 @@ package main {
 			}
 		}
 		
-		public function onEnterFrame(e:Event):void{
+		private function onEnterFrame(e:Event):void{
 			hitTests();
 			mBall.mVelocity = 8 + (mBall.mouseX / 100);
 			mBall.moveBall();
 		}
 			
 		/** function tests if the ball is hit by a pad or a wall **/
-		public function hitTests():void{
+		private function hitTests():void{
 			
 			var padHit:Boolean = false;
 			
@@ -111,7 +111,7 @@ package main {
 			
 		}
 		
-		public function wallHitTest():void{
+		private function wallHitTest():void{
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
@@ -166,7 +166,7 @@ package main {
 			}
 		}
 		
-		public function updateScore():void{
+		private function updateScore():void{
 			mScore = "Player 1: " + PS1 + "\n" + "Player 2: " + PS2 + "\n" + "Player 3: " + PS3 + "\n" + "Player 4: " + PS4;
 			FlexGlobals.topLevelApplication.SCORE_TABLE.text = mScore;
 		}
@@ -185,7 +185,7 @@ package main {
 			mPads = tempVec;
 		}
 		
-		public function markPadLastHit(pad:Pad):void{
+		private function markPadLastHit(pad:Pad):void{
 			var p:Pad;
 			if(pad != null){
 				for each(p in mPads){
@@ -202,13 +202,15 @@ package main {
 			}
 		}
 		
-		public function setUpArduino():void{
+		//connects the socket with the localhost on port 5331 (COM4) and adds a listener for receiving data
+		private function setUpArduino():void{
 			mArduinoSocket = new Socket();
 			mArduinoSocket.connect("127.0.0.1", 5331);
 			mArduinoSocket.addEventListener(ProgressEvent.SOCKET_DATA, onReceiveData);
 		}
 		
-		public function onReceiveData(e:ProgressEvent):void{
+		//reads the data received from the socket and process them in pairs of pin & value 
+		private function onReceiveData(e:ProgressEvent):void{
 			var bytes:ByteArray = new ByteArray();
 			mArduinoSocket.readBytes(bytes,0,0);
 			
@@ -224,6 +226,7 @@ package main {
 			}
 		}
 
+		//processes the data according to the pin (0-3: move pad | 4-7: bend walls)
 		private function processData(pin:int, data:int):void{
 			trace("Pin:  " + pin);
 			trace("Data: " + data);
@@ -288,7 +291,8 @@ package main {
 
 			return wallPos + position;
 		}
-				
+		
+		//creates the pad
 		private function createPad(playerId:int):void{
 			var x:int;
 			var y:int;
