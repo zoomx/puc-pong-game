@@ -1,10 +1,16 @@
 package main {
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
+	import flash.media.Sound;
+	import flash.media.SoundMixer;
 	import flash.net.Socket;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
+	import flash.net.URLRequest;
 	
 	import mx.core.FlexGlobals;
 	
@@ -26,6 +32,16 @@ package main {
 		public var PS3:int;
 		public var PS4:int;
 		
+		//variabelen Balsnelheid
+		private var ba:ByteArray = new ByteArray();
+		private var spectrumBars_mc:Sprite = new Sprite();
+		private var media:Array;
+		private var valor:int;
+		private var multiplier:uint = 100;
+		private var _timer:Timer;
+		private var _sound:Sound;
+		private var _link:String;
+		
 		private var mScore:String = "Player 1: " + PS1 + "\n" + 
 									"Player 2: " + PS2 + "\n" + 
 									"Player 3: " + PS3 + "\n" + 
@@ -33,12 +49,14 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		public static var MOUSE_CONTROL:Boolean = false;
+		public static var MOUSE_CONTROL:Boolean = true;
 		
-		public function Game(stage:BorderContainer, playerCount:int){
+		public function Game(stage:BorderContainer, playerCount:int, _mp3:String){
 			
 			mStage = stage;
 			mPlayerCount = playerCount;
+			
+			_link = _mp3;
 			
 			if(!MOUSE_CONTROL) setUpArduino();
 			
@@ -56,6 +74,10 @@ package main {
 
 			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,20));
 			mStage.addElement(mBall);
+			
+			//loadsound
+			_sound = new Sound(new URLRequest(_link));
+			_sound.addEventListener(Event.COMPLETE, loadComplete);
 				
 			//create pads
 			mPads = new Vector.<Pad>();
@@ -71,8 +93,24 @@ package main {
 			
 			updateScore();
 			
+		
+			
+			
+			
 			if(MOUSE_CONTROL)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+		private function loadComplete(e:Event):void{
+			_sound.removeEventListener(Event.COMPLETE, loadComplete);
+			
+			_sound = e.target as Sound;
+			_sound.play();
+			
+			//starts timer for beat detection
+			_timer = new Timer(26);
+			_timer.addEventListener(TimerEvent.TIMER, onEnterFrame);
+			_timer.start();
 		}
 		
 		private function onMouseMove(e:MouseEvent):void{
@@ -83,7 +121,21 @@ package main {
 		
 		private function onEnterFrame(e:Event):void{
 			hitTests();
-			mBall.mVelocity = 8 + (mBall.mouseX / 100);
+			
+			SoundMixer.computeSpectrum(ba,true,0);
+			spectrumBars_mc.graphics.clear();
+			media = new Array();
+			
+			
+			
+			valor = ba.readFloat() * multiplier;
+			media.push(valor);
+			
+			//spectrumBars_mc.graphics.beginFill(0x000000);
+			//spectrumBars_mc.graphics.drawCircle(0, 0, -valor );
+			
+			
+			mBall.mVelocity = 1 - valor;
 			mBall.moveBall();
 		}
 			

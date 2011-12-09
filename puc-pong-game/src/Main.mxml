@@ -18,6 +18,7 @@
 			
 			private var mGame:Game;
 			
+			
 			public function init():void{
 								
 				//fullscreen window
@@ -28,7 +29,7 @@
 				STAGE.width = this.width;
 				STAGE.height = this.height;
 							
-				mGame = new Game(STAGE, 4);
+				mGame = new Game(STAGE, 4, "poing.mp3");
 			}
 			
 		]]>
