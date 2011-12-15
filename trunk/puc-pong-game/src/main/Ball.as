@@ -50,8 +50,8 @@ package main {
 		public function moveBall():void{
 			removeChild(mCircle);
 			mLastPosition = mPosition.clone();
-			mPosition.x += mDirection.x;
-			mPosition.y += mDirection.y;
+			mPosition.x += mDirection.x * mVelocity;
+			mPosition.y += mDirection.y * mVelocity;
 
 			createBall();
 		}

@@ -40,7 +40,7 @@ package main{
 		public static var D3:String = "D3";
 		public static var D4:String = "D4";
 		
-		public static var MIN_VOLUME:int = 70;
+		public static var MIN_VOLUME:int = 60;
 				
 		public function Wall(startX:int, startY:int, stopX:int, stopY:int){
 			super();
@@ -52,8 +52,7 @@ package main{
 			
 			createWall();
 			
-			//comment this line to have a "normal" game 
-			if(Game.MOUSE_CONTROL)addEventListener(Event.ENTER_FRAME, changeWalls);
+			if(Game.CURVES_BY_MOUSE)addEventListener(Event.ENTER_FRAME, changeWalls);
 			
 		}
 		
@@ -67,7 +66,25 @@ package main{
 		
 		//only used with mouse control (test function)
 		private function changeWalls(e:Event):void{
-			bendWall(mouseY/8);
+			bendWall(mouseY/4);
+		}
+		
+		private var xx:int;
+		private var xxx:int = 0;
+		private var bi:int = 0;
+		//test function to display the incoming microphone values
+		private function createDot(val:int):void{
+			var dot:Shape = new Shape();
+			dot.graphics.beginFill(0x00ff00,1);
+			dot.graphics.drawEllipse(xx, (val) + xxx, 2, 2);
+
+			xx++;	
+			
+			if(xx > 1680){
+				xxx +=250;
+				xx = 0;
+			}
+			addChild(dot);
 		}
 			
 		//bends the wall according to the received volume value
@@ -75,6 +92,8 @@ package main{
 			if(mLine != null && contains(mLine)){
 				removeChild(mLine);
 			}
+			
+			createDot(val);
 			
 			if(val > Wall.MIN_VOLUME){
 				mLine = new Shape();
@@ -86,9 +105,9 @@ package main{
 				}
 				else if(name == Wall.D2 || name == Wall.D4){
 					mLine.graphics.curveTo(mStopX+(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
-				}else{
-					createWall();
 				}
+			}else{
+				createWall();
 			}
 
 			addChild(mLine);

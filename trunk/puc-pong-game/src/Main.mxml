@@ -29,7 +29,7 @@
 				STAGE.width = this.width;
 				STAGE.height = this.height;
 							
-				mGame = new Game(STAGE, 4, "http://blog.andrevenancio.com/mp3/sample.mp3");
+				mGame = new Game(STAGE, 4);
 			}
 			
 		]]>
