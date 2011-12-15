@@ -8,9 +8,11 @@ package main {
 	import flash.media.Sound;
 	import flash.media.SoundMixer;
 	import flash.net.Socket;
+	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
-	import flash.net.URLRequest;
+	
+	import flashx.textLayout.formats.Float;
 	
 	import mx.core.FlexGlobals;
 	
@@ -33,14 +35,9 @@ package main {
 		public var PS4:int;
 		
 		//variabelen Balsnelheid
-		private var ba:ByteArray = new ByteArray();
-		private var spectrumBars_mc:Sprite = new Sprite();
-		private var media:Array;
-		private var valor:int;
-		private var multiplier:uint = 100;
-		private var _timer:Timer;
-		private var _sound:Sound;
-		private var _link:String;
+		private var mTimer:Timer;
+		private var mSound:Sound;
+		private var mLink:String = "http://nm2n.net/snd/sect.mp3";
 		
 		private var mScore:String = "Player 1: " + PS1 + "\n" + 
 									"Player 2: " + PS2 + "\n" + 
@@ -50,17 +47,23 @@ package main {
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
 		public static var MOUSE_CONTROL:Boolean = true;
+		public static var CURVES_BY_MOUSE:Boolean = false;
 		
-		public function Game(stage:BorderContainer, playerCount:int, _mp3:String){
+		public function Game(stage:BorderContainer, playerCount:int){
 			
 			mStage = stage;
 			mPlayerCount = playerCount;
 			
-			_link = _mp3;
-			
 			if(!MOUSE_CONTROL) setUpArduino();
 			
+			loadSound();
 			createNewGame(mPlayerCount);
+		}
+		
+		private function loadSound():void{
+			//loadsound
+			mSound = new Sound(new URLRequest(mLink));
+			mSound.addEventListener(Event.COMPLETE, loadComplete);			
 		}
 		
 		/* creates a new game with the ball, pads and the game area*/
@@ -71,14 +74,9 @@ package main {
 			mStage.addElement(mArea);
 			
 			//create pong ball
-
 			mBall = new Ball(mStage.width/2, mStage.height/2, new Point(1,20));
 			mStage.addElement(mBall);
-			
-			//loadsound
-			_sound = new Sound(new URLRequest(_link));
-			_sound.addEventListener(Event.COMPLETE, loadComplete);
-				
+							
 			//create pads
 			mPads = new Vector.<Pad>();
 			var i:int;
@@ -93,24 +91,23 @@ package main {
 			
 			updateScore();
 			
-		
-			
-			
-			
 			if(MOUSE_CONTROL)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		private function loadComplete(e:Event):void{
-			_sound.removeEventListener(Event.COMPLETE, loadComplete);
+			mSound.removeEventListener(Event.COMPLETE, loadComplete);
 			
-			_sound = e.target as Sound;
-			_sound.play();
+			mSound = e.target as Sound;
+			mSound.play();
 			
 			//starts timer for beat detection
-			_timer = new Timer(26);
-			_timer.addEventListener(TimerEvent.TIMER, onEnterFrame);
-			_timer.start();
+			mTimer = new Timer(26);
+			mTimer.addEventListener(TimerEvent.TIMER, onEnterFrame);
+			mTimer.start();
+			
+			//create new game after sound has been loaded
+			createNewGame(mPlayerCount);
 		}
 		
 		private function onMouseMove(e:MouseEvent):void{
@@ -121,22 +118,41 @@ package main {
 		
 		private function onEnterFrame(e:Event):void{
 			hitTests();
+			computeBallSpeed();
+		}
+		
+		private var counter:int = 0;
+		private var velocity:Number = 0;
+		private var lastVelo:Number = 1;
+		private function computeBallSpeed():void{
+			//var spectrumBars_mc:Sprite = new Sprite();
+			var spectrum:ByteArray = new ByteArray(); 
+			var multiplier:uint = 2;
+			var velo:Number = 1;
 			
-			SoundMixer.computeSpectrum(ba,true,0);
-			spectrumBars_mc.graphics.clear();
-			media = new Array();
+			SoundMixer.computeSpectrum(spectrum, true, 0);
+			//spectrumBars_mc.graphics.clear();
 			
+			velo = spectrum.readFloat() * multiplier;
 			
-			
-			valor = ba.readFloat() * multiplier;
-			media.push(valor);
+			if(counter <= 100){
+				velocity += velo;
+				counter++;
+			}
+			else{
+				//calculate new velocity and smooth it
+				velo = (0.9 * lastVelo) + (0.1 * (velocity/100));
+				lastVelo = velo;
+				trace(velo);
+				counter = 0;
+				velocity = 0;
+			}
 			
 			//spectrumBars_mc.graphics.beginFill(0x000000);
 			//spectrumBars_mc.graphics.drawCircle(0, 0, -valor );
 			
-			
-			mBall.mVelocity = 1 - valor;
-			mBall.moveBall();
+			mBall.mVelocity = velo * 2;
+			mBall.moveBall();			
 		}
 			
 		/** function tests if the ball is hit by a pad or a wall **/
@@ -155,7 +171,6 @@ package main {
 				}
 			}
 
-
 			//if ball is not hit by a pad test for the wall
 			if(!padHit){
 				wallHitTest();
@@ -170,7 +185,6 @@ package main {
 					//trace(wall.name + ": " + mBall.mDirection.x + " | " + mBall.mDirection.y );
 					if(wall.name == "H1" && !wall.mIsSolid) { 
 						PS1 --;
-						trace("PS1: " + PS1);
 						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						
@@ -181,7 +195,6 @@ package main {
 					
 					if(wall.name == "H2" && !wall.mIsSolid) { 
 						PS3 --;
-						trace("PS3: " + PS3);
 						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						if(PS3 <= 0) removePlayer(wall);
@@ -191,7 +204,6 @@ package main {
 					
 					if(wall.name == "V1" && !wall.mIsSolid) { 
 						PS2 --;
-						trace("PS2: " + PS2);
 						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						if(PS2 <= 0) removePlayer(wall);
@@ -201,8 +213,6 @@ package main {
 					
 					if(wall.name == "V2" && !wall.mIsSolid) { 
 						PS4 --;
-						
-						trace("PS4: " + PS4);
 						updateScore();
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						if(PS4 <= 0) removePlayer(wall);
@@ -320,7 +330,28 @@ package main {
 			}
 			else if(pin == 4){
 				for each (wall in mArea.mWalls){
-					if(wall.name == Wall.D1 || wall.name == Wall.D2 || wall.name == Wall.D3 || wall.name == Wall.D4){
+					if(wall.name == Wall.D1){
+						wall.bendWall(data);
+					}
+				}
+			}
+			else if(pin == 5){
+				for each (wall in mArea.mWalls){
+					if(wall.name == Wall.D2){
+						wall.bendWall(data);
+					}
+				}
+			}
+			else if(pin == 6){
+				for each (wall in mArea.mWalls){
+					if(wall.name == Wall.D3){
+						wall.bendWall(data);
+					}
+				}
+			}
+			else if(pin == 7){
+				for each (wall in mArea.mWalls){
+					if(wall.name == Wall.D4){
 						wall.bendWall(data);
 					}
 				}
