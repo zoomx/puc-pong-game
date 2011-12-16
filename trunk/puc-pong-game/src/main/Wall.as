@@ -8,6 +8,7 @@ package main{
 	import flash.geom.Point;
 	
 	import mx.containers.utilityClasses.PostScaleAdapter;
+	import mx.core.FlexGlobals;
 	
 	import spark.primitives.Path;
 	
@@ -20,6 +21,9 @@ package main{
 		public var mStartY:int;
 		public var mStopX:int;
 		public var mStopY:int;
+		
+		public var minValue:Number = 90;
+		public var maxValue:Number = 155;
 		
 		public var mLastHit:Boolean = false;
 				
@@ -40,7 +44,6 @@ package main{
 		public static var D3:String = "D3";
 		public static var D4:String = "D4";
 		
-		public static var MIN_VOLUME:int = 60;
 				
 		public function Wall(startX:int, startY:int, stopX:int, stopY:int){
 			super();
@@ -57,6 +60,9 @@ package main{
 		}
 		
 		private function createWall():void{
+			if(mLine != null && contains(mLine)){
+			removeChild(mLine);
+			}
 			mLine = new Shape();
 			mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
 			mLine.graphics.moveTo(mStartX, mStartY);
@@ -89,26 +95,28 @@ package main{
 			
 		//bends the wall according to the received volume value
 		public function bendWall(val:int):void {
-			if(mLine != null && contains(mLine)){
-				removeChild(mLine);
-			}
-			
+			removeChild(mLine);
 			createDot(val);
-			
-			if(val > Wall.MIN_VOLUME){
+			trace(FlexGlobals.topLevelApplication.STAGE.height);
+if(val >= minValue && val <= maxValue){ val = 899/4; }
+				
 				mLine = new Shape();
 				mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
 				mLine.graphics.moveTo(mStartX, mStartY);
 				
-				if(name == Wall.D1 || name == Wall.D3){
+				if(name == Wall.D1){
 					mLine.graphics.curveTo(mStartX+(0.5*val), mStopY-(0.5*val), mStopX, mStopY);
 				}
-				else if(name == Wall.D2 || name == Wall.D4){
-					mLine.graphics.curveTo(mStopX+(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
+				else if(name == Wall.D3){
+				mLine.graphics.curveTo(mStartX-(0.5*val), mStopY+(0.5*val), mStopX, mStopY);	
 				}
-			}else{
-				createWall();
-			}
+				else if(name == Wall.D2){
+					mLine.graphics.curveTo(mStopX+(0.5*val), mStartY+(0.5*val), mStopX, mStopY);
+				} else if (name == Wall.D4){
+					mLine.graphics.curveTo(mStopX-(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
+				}
+				else { createWall(); }
+
 
 			addChild(mLine);
 		}
