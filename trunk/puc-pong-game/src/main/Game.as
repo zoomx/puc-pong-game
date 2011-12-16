@@ -6,6 +6,7 @@ package main {
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.media.Sound;
+	import flash.media.SoundChannel;
 	import flash.media.SoundMixer;
 	import flash.net.Socket;
 	import flash.net.URLRequest;
@@ -37,6 +38,7 @@ package main {
 		//variabelen Balsnelheid
 		private var mTimer:Timer;
 		private var mSound:Sound;
+		private var mSoundChannel:SoundChannel;
 		private var mLink:String = "http://nm2n.net/snd/sect.mp3";
 		
 		private var mScore:String = "Player 1: " + PS1 + "\n" + 
@@ -106,7 +108,7 @@ package main {
 			mSound.removeEventListener(Event.COMPLETE, loadComplete);
 			
 			mSound = e.target as Sound;
-			mSound.play();
+			mSoundChannel = mSound.play();
 			
 			//starts timer for beat detection
 			mTimer = new Timer(26);
@@ -439,7 +441,13 @@ package main {
 			mStage.addElement(pad);
 			mPads.push(pad);
 		}
+		
+		public function release():void{
+			mTimer.stop();
+			mTimer.removeEventListener(TimerEvent.TIMER, onEnterFrame);
+			mTimer = null;
+			mSoundChannel.stop();
+			mSound = null;
+		}
 	}
-	
-
 }
