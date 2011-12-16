@@ -28,8 +28,23 @@
 				//fullscreen stage
 				STAGE.width = this.width;
 				STAGE.height = this.height;
+				STAGE.setFocus();
+				
+				this.addEventListener(KeyboardEvent.KEY_UP, onKey);
 							
 				mGame = new Game(STAGE, 4);
+			}
+			
+			private function onKey(e:KeyboardEvent):void{
+				switch(e.keyCode){
+					case Keyboard.F5:
+						STAGE.removeAllElements();
+						mGame.release();
+						mGame = new Game(STAGE, 4);
+						break;
+					default:
+						break;
+				}
 			}
 			
 		]]>
@@ -39,5 +54,6 @@
 		
 	</s:BorderContainer>
 	
-	<s:TextArea id="SCORE_TABLE" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" borderVisible="false" fontSize="16" fontFamily="Verdana"/>
+	<s:TextArea id="SCORE_TABLE" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 
+				borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
 </s:WindowedApplication>
