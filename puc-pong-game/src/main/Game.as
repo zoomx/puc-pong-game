@@ -35,6 +35,11 @@ package main {
 		public var PS3:int;
 		public var PS4:int;
 		
+		//incoming values from arduino, and filtered values
+		public var values:Number;
+		public var valuesRaw:Number;
+
+		
 		//variabelen Balsnelheid
 		private var mTimer:Timer;
 		private var mSound:Sound;
@@ -48,7 +53,7 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		public static var MOUSE_CONTROL:Boolean = true;
+		public static var MOUSE_CONTROL:Boolean = false;
 		public static var CURVES_BY_MOUSE:Boolean = false;
 		public static var PLAY_WITH_SOUND:Boolean = true;
 		
@@ -56,8 +61,6 @@ package main {
 			
 			mStage = stage;
 			mPlayerCount = playerCount;
-			
-			if(!MOUSE_CONTROL) setUpArduino();
 			
 			if(PLAY_WITH_SOUND){
 				loadSound();
@@ -74,6 +77,7 @@ package main {
 		
 		/* creates a new game with the ball, pads and the game area*/
 		private function createNewGame(playerCount:int):void{
+			if(!MOUSE_CONTROL) setUpArduino();
 			
 			//create game area
 			mArea = new GameArea(mStage.height, mStage.width);
@@ -287,23 +291,30 @@ package main {
 		private function onReceiveData(e:ProgressEvent):void{
 			var bytes:ByteArray = new ByteArray();
 			mArduinoSocket.readBytes(bytes,0,0);
+			values = 0;
+			function replace(str:String, fnd:String, rpl:String):String{
+				return str.split(fnd).join(rpl);
+			}
 			
+			valuesRaw = replace(bytes, "\n", "");
+			values = Math.floor(valuesRaw / 4);
+			//trace(values);
+			processData(5, values);
 			//sometimes we get odd number of bytes which causes that 0 values are delivered for the data variable although it isnt its value
 			//to prevent this we make that even numbers are processed (the last byte is cut when odd numbers are received)
-			var numBytes:uint = bytes.length;
-			if(numBytes%2 != 0) numBytes -= 1;
+//			var numBytes:uint = bytes.length;
+//			if(numBytes%2 != 0) numBytes -= 1;
 			
-			var i:int;
-			for(i=0; i<numBytes; i++){
-				processData(bytes[i], bytes[i+1]);
-				i++;
-			}
+//			var i:int;
+//			for(i=0; i<numBytes; i++){
+//				processData(bytes[i], bytes[i+1]);
+//				i++;
+//			}
 		}
 
 		//processes the data according to the pin (0-3: move pad | 4-7: bend walls)
 		private function processData(pin:int, data:int):void{
-			trace("Pin:  " + pin);
-			trace("Data: " + data);
+
 			
 			var pad:Pad;
 			var wall:Wall;
@@ -350,7 +361,8 @@ package main {
 			else if(pin == 5){
 				for each (wall in mArea.mWalls){
 					if(wall.name == Wall.D2){
-						wall.bendWall(data);
+					wall.bendWall(data);
+				
 					}
 				}
 			}
