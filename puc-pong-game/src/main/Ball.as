@@ -115,9 +115,10 @@ package main {
 			
 			var angle:Number;
 			var hitPoint:Number = getHitPoint(pad);
+			var multiplicator:Number = 10 / (pad.getPadSize(pad.getWall()) / 2);
 			
-			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) angle = 0 + (hitPoint * 0.16);
-			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2) angle = 90 + (hitPoint * 0.16);
+			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) angle = 0 + (hitPoint * multiplicator);
+			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2) angle = 90 + (hitPoint * multiplicator);
 			
 			var vPad:Point = new Point();
 			var vBall:Point = new Point();
