@@ -148,7 +148,7 @@ package main {
 			else{
 				//calculate new velocity and smooth it
 				velo = (0.9 * velo) + (0.1 * (sumVelo/100));
-				trace(velo);
+				//trace(velo);
 				
 				//reset counter and sumVelo
 				count = 0;
@@ -244,6 +244,7 @@ package main {
 			FlexGlobals.topLevelApplication.SCORE_TABLE.text = mScore;
 		}
 		
+		// remove a player (pad) from a distinct wall
 		private function removePlayer(wall:Wall):void{
 			wall.mIsSolid = true;
 			var pad:Pad;

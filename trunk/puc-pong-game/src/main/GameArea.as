@@ -63,7 +63,7 @@ package main{
 			xPos = startX;	
 			yPos = startY;
 			mY = startY;
-			trace(startX + "," + startY);
+
 			/* create D1 line */
 			startX = stopX;
 			startY = stopY;
