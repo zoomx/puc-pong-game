@@ -114,19 +114,20 @@ package main {
 		public function setDirectionByPadHit(pad:Pad):Point{
 			
 			var angle:Number;
+			var hitPoint:Number = getHitPoint(pad);
 			
-			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) angle = 0;
-			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2) angle = 90;
+			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) angle = 0 + (hitPoint * 0.16);
+			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2) angle = 90 + (hitPoint * 0.16);
 			
 			var vPad:Point = new Point();
 			var vBall:Point = new Point();
 			
 			//determine pad vector
 			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2 ) {
-				vPad = VectorAnalysis.getVector(pad.mWidth - pad.mX, angle);
+				vPad = VectorAnalysis.getVector(pad.mWidth - pad.mPostion.x, angle);
 			}
 			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2){
-				vPad = VectorAnalysis.getVector(pad.mHeight - pad.mY, angle);
+				vPad = VectorAnalysis.getVector(pad.mHeight - pad.mPostion.y, angle);
 			}
 			
 			//determine ball vector
@@ -140,6 +141,41 @@ package main {
 			n = VectorAnalysis.normalize(r);
 			
 			return new Point(n.x * mVelocity, n.y * mVelocity);
+		}
+		
+		private function getHitPoint(pad:Pad):Number{
+			var p:Number = 0;
+			var pX:Number = pad.mPostion.x;
+			var pY:Number = pad.mPostion.y;
+			var bX:Number = mPosition.x;
+			var bY:Number = mPosition.y;
+			var pSize:Number = pad.getPadSize(pad.getWall());
+			var pMid:Number = pSize/2;
+			
+			if(pad.getWall() == Wall.H1 || pad.getWall() == Wall.H2){
+				p = bX - pX;
+				
+				//if p greater than pad size, the edge has been hit
+				if(p > pSize) p = pSize;
+				
+				//no negative values please
+				if(p < 0) p *= -1;
+				
+				if(p > pMid)p = pSize - p;
+			}
+			else if(pad.getWall() == Wall.V1 || pad.getWall() == Wall.V2){
+				p = bY - pY;
+				
+				//if p greater than pad size, the edge has been hit
+				if(p > pSize) p = pSize;
+				
+				//no negative values please
+				if(p < 0) p *= -1;
+				
+				if(p > pMid)p = pSize - p;
+			}
+			trace(p);
+			return p;
 		}
 	}
 }

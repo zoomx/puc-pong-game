@@ -1,5 +1,6 @@
 package main{
 	import flash.display.Shape;
+	import flash.geom.Point;
 	
 	import mx.core.UIComponent;
 	
@@ -10,8 +11,7 @@ package main{
 		/* the wall on which the pad is implemented*/
 		private var mWall:String;
 		
-		public var mX:int;
-		public var mY:int;
+		public var mPostion:Point;
 		public var mWidth:int;
 		public var mHeight:int;
 		
@@ -26,8 +26,7 @@ package main{
 		public function Pad(playerId:int, x:int, y:int, width:int, height:int, wall:String, left:int, right:int) {
 			super();
 			
-			this.mX = x;
-			this.mY = y;
+			this.mPostion = new Point(x,y);
 			this.mWall = wall;
 			this.mWidth = width;
 			this.mHeight = height;
@@ -42,56 +41,36 @@ package main{
 		private function createPad():void{
 			mRect = new Shape();
 			mRect.graphics.beginFill(0xafafaf, 1.0);
-			mRect.graphics.drawRect(mX, mY, mWidth, mHeight);
+			mRect.graphics.drawRect(mPostion.x, mPostion.y, mWidth, mHeight);
 			mRect.graphics.endFill();
 			addChild(mRect);
 		}
 		
 		/* calculates the movement of a pad by a single sensor value */
 		public function movePad(value:int):void{
-			if(mWall == Wall.H1){
-				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, value));
+			if(mWall == Wall.H1 || mWall == Wall.H2){
+				mPostion.x = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, value));
 				removeChild(mRect);
 				createPad();
 			}
-			else if(mWall == Wall.H2){
-				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, value));
-				removeChild(mRect);
-				createPad();			
-			}
-			else if(mWall == Wall.V1){
-				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, value));
+			else if(mWall == Wall.V1 || mWall == Wall.V2){
+				mPostion.y = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, value));
 				removeChild(mRect);
 				createPad();				
-			}
-			else if(mWall == Wall.V2){
-				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, value));
-				removeChild(mRect);
-				createPad();		
 			}
 		}
 		
 		/* [test function] move the pad by mouse values */
 		public function movePadByMouse(mouseX:int, mouseY:int):void{
-			if(mWall == Wall.H1){
-				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, mouseX));
+			if(mWall == Wall.H1 || mWall == Wall.H2){
+				mPostion.x = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, mouseX));
 				removeChild(mRect);
 				createPad();
 			}
-			else if(mWall == Wall.H2){
-				mX = Math.max(mLeftMax, Math.min(mRightMax - mRect.width, mouseX));
+			else if(mWall == Wall.V1 || mWall == Wall.V2){
+				mPostion.y = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, mouseY));
 				removeChild(mRect);
 				createPad();			
-			}
-			else if(mWall == Wall.V1){
-				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, mouseY));
-				removeChild(mRect);
-				createPad();			
-			}
-			else if(mWall == Wall.V2){
-				mY = Math.max(mLeftMax, Math.min(mRightMax - mRect.height, mouseY));
-				removeChild(mRect);
-				createPad();		
 			}
 		}
 		
