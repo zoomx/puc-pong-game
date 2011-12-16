@@ -24,7 +24,10 @@ package main {
 		public var mRadius:int = 12;
 		
 		//velocity of the ball
-		public var mVelocity:int = 8;
+		public var mVelocity:Number = 1;
+		
+		//max velocity
+		public static var MAX_VELOCITY:Number = 3.5;
 	
 		public function Ball(startX:int, startY:int, direction:Point) {
 		
@@ -50,8 +53,8 @@ package main {
 		public function moveBall():void{
 			removeChild(mCircle);
 			mLastPosition = mPosition.clone();
-			mPosition.x += mDirection.x * mVelocity;
-			mPosition.y += mDirection.y * mVelocity;
+			mPosition.x += (mDirection.x * mVelocity);
+			mPosition.y += (mDirection.y * mVelocity);
 
 			createBall();
 		}

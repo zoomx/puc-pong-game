@@ -48,6 +48,7 @@ package main {
 		// false: game controlled by arduino 
 		public static var MOUSE_CONTROL:Boolean = true;
 		public static var CURVES_BY_MOUSE:Boolean = false;
+		public static var PLAY_WITH_SOUND:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -56,8 +57,11 @@ package main {
 			
 			if(!MOUSE_CONTROL) setUpArduino();
 			
-			loadSound();
-			createNewGame(mPlayerCount);
+			if(PLAY_WITH_SOUND){
+				loadSound();
+			}else{
+				createNewGame(mPlayerCount);
+			}
 		}
 		
 		private function loadSound():void{
@@ -96,6 +100,9 @@ package main {
 		}
 		
 		private function loadComplete(e:Event):void{
+			//create new game after sound has been loaded
+			createNewGame(mPlayerCount);
+			
 			mSound.removeEventListener(Event.COMPLETE, loadComplete);
 			
 			mSound = e.target as Sound;
@@ -105,9 +112,6 @@ package main {
 			mTimer = new Timer(26);
 			mTimer.addEventListener(TimerEvent.TIMER, onEnterFrame);
 			mTimer.start();
-			
-			//create new game after sound has been loaded
-			createNewGame(mPlayerCount);
 		}
 		
 		private function onMouseMove(e:MouseEvent):void{
@@ -121,37 +125,42 @@ package main {
 			computeBallSpeed();
 		}
 		
-		private var counter:int = 0;
-		private var velocity:Number = 0;
-		private var lastVelo:Number = 1;
+		private var count:int = 0;
+		private var sumVelo:Number = 0;
+		private var velo:Number = 1;
 		private function computeBallSpeed():void{
 			//var spectrumBars_mc:Sprite = new Sprite();
 			var spectrum:ByteArray = new ByteArray(); 
-			var multiplier:uint = 2;
-			var velo:Number = 1;
+			var multiplier:uint = 4;
+			var readSpec:int;
 			
 			SoundMixer.computeSpectrum(spectrum, true, 0);
 			//spectrumBars_mc.graphics.clear();
 			
-			velo = spectrum.readFloat() * multiplier;
+			readSpec = spectrum.readFloat() * multiplier;
 			
-			if(counter <= 100){
-				velocity += velo;
-				counter++;
+			if(count <= 100){
+				sumVelo += readSpec;
+				count++;
 			}
 			else{
 				//calculate new velocity and smooth it
-				velo = (0.9 * lastVelo) + (0.1 * (velocity/100));
-				lastVelo = velo;
+				velo = (0.9 * velo) + (0.1 * (sumVelo/100));
 				trace(velo);
-				counter = 0;
-				velocity = 0;
+				
+				//reset counter and sumVelo
+				count = 0;
+				sumVelo = 0;
 			}
 			
 			//spectrumBars_mc.graphics.beginFill(0x000000);
 			//spectrumBars_mc.graphics.drawCircle(0, 0, -valor );
 			
-			mBall.mVelocity = velo * 2;
+			if((velo * 2) > Ball.MAX_VELOCITY){
+				mBall.mVelocity = Ball.MAX_VELOCITY;
+			}else{
+				mBall.mVelocity = velo * 2;	
+			}
 			mBall.moveBall();			
 		}
 			
