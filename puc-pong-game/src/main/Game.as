@@ -389,7 +389,10 @@ package main {
 		public function mapSensorValue(value:int, wall:String):int{
 			var max:Number = MAX_PAD_VALUE;
 			var length:Number = mArea.mWallLength;
+			
+			
 			var position:Number = Math.max(0, ((length / max) * value) - mPadSize);
+			if(position < mPadSize) position = ((length / max) * value);
 			
 			var wallPos:int
 			var w:Wall = mArea.getWall(wall);
