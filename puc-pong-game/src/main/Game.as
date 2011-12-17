@@ -38,6 +38,8 @@ package main {
 		//incoming values from arduino, and filtered values
 		public var values:Number;
 		public var valuesRaw:Number;
+		
+		private static var MAX_PAD_VALUE:int = 70;
 
 		
 		//variabelen Balsnelheid
@@ -291,30 +293,31 @@ package main {
 		private function onReceiveData(e:ProgressEvent):void{
 			var bytes:ByteArray = new ByteArray();
 			mArduinoSocket.readBytes(bytes,0,0);
-			values = 0;
+		/*	values = 0;
 			function replace(str:String, fnd:String, rpl:String):String{
 				return str.split(fnd).join(rpl);
 			}
 			
 			valuesRaw = replace(bytes, "\n", "");
 			values = Math.floor(valuesRaw / 4);
-			//trace(values);
-			processData(5, values);
+			trace(values);
+			*/
+			
 			//sometimes we get odd number of bytes which causes that 0 values are delivered for the data variable although it isnt its value
 			//to prevent this we make that even numbers are processed (the last byte is cut when odd numbers are received)
-//			var numBytes:uint = bytes.length;
-//			if(numBytes%2 != 0) numBytes -= 1;
+			var numBytes:uint = bytes.length;
+			if(numBytes%2 != 0) numBytes -= 1;
 			
-//			var i:int;
-//			for(i=0; i<numBytes; i++){
-//				processData(bytes[i], bytes[i+1]);
-//				i++;
-//			}
+			var i:int;
+			for(i=0; i<numBytes; i++){
+				processData(bytes[i], bytes[i+1]);
+				i++;
+			}
 		}
 
 		//processes the data according to the pin (0-3: move pad | 4-7: bend walls)
 		private function processData(pin:int, data:int):void{
-
+			trace("pin: " + pin + " data: " + data);
 			
 			var pad:Pad;
 			var wall:Wall;
@@ -384,7 +387,7 @@ package main {
 	
 		/* function maps the sensor value (0 - 255) to the position of the pad and returns it*/
 		public function mapSensorValue(value:int, wall:String):int{
-			var max:Number = 255;
+			var max:Number = MAX_PAD_VALUE;
 			var length:Number = mArea.mWallLength;
 			var position:Number = Math.max(0, ((length / max) * value) - mPadSize);
 			
@@ -461,6 +464,7 @@ package main {
 			mTimer = null;
 			mSoundChannel.stop();
 			mSound = null;
+			mArduinoSocket.close();
 		}
 	}
 }

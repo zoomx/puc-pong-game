@@ -96,27 +96,31 @@ package main{
 		//bends the wall according to the received volume value
 		public function bendWall(val:int):void {
 			removeChild(mLine);
-			createDot(val);
-			trace(FlexGlobals.topLevelApplication.STAGE.height);
-if(val >= minValue && val <= maxValue){ val = 899/4; }
-				
-				mLine = new Shape();
-				mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
-				mLine.graphics.moveTo(mStartX, mStartY);
-				
-				if(name == Wall.D1){
-					mLine.graphics.curveTo(mStartX+(0.5*val), mStopY-(0.5*val), mStopX, mStopY);
-				}
-				else if(name == Wall.D3){
-				mLine.graphics.curveTo(mStartX-(0.5*val), mStopY+(0.5*val), mStopX, mStopY);	
-				}
-				else if(name == Wall.D2){
-					mLine.graphics.curveTo(mStopX+(0.5*val), mStartY+(0.5*val), mStopX, mStopY);
-				} else if (name == Wall.D4){
-					mLine.graphics.curveTo(mStopX-(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
-				}
-				else { createWall(); }
+			//createDot(val);
 
+			if(val >= minValue && val <= maxValue){ 
+				val = 899/4; 
+			}
+				
+			mLine = new Shape();
+			mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+			mLine.graphics.moveTo(mStartX, mStartY);
+			
+			if(name == Wall.D1){
+				mLine.graphics.curveTo(mStartX+(0.5*val), mStopY-(0.5*val), mStopX, mStopY);
+			}
+			else if(name == Wall.D3){
+				mLine.graphics.curveTo(mStartX-(0.5*val), mStopY+(0.5*val), mStopX, mStopY);	
+			}
+			else if(name == Wall.D2){
+				mLine.graphics.curveTo(mStopX+(0.5*val), mStartY+(0.5*val), mStopX, mStopY);
+			} 
+			else if (name == Wall.D4){
+				mLine.graphics.curveTo(mStopX-(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
+			}
+			else { 
+				createWall(); 
+			}
 
 			addChild(mLine);
 		}
