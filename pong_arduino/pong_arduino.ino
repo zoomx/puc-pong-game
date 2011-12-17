@@ -24,10 +24,13 @@ int A03Value;
 int A04Value;
 int A05Value;
 
+//encoder variables
 int state, prevstate = 0, count = 0;
 int nextEncoderState[4] = { 2, 0, 3, 1 };
 int prevEncoderState[4] = { 1, 3, 0, 2 };
 
+// will store last time analog values has been sent
+long previousMillis = 0;
 
 void setup() {
   pinMode(encoder0PinA, INPUT); 
@@ -41,32 +44,26 @@ void setup() {
 
 //returs smoothed analog values
 void readAnalogValues(){
-    A02Value = (0.9 * A02Value) + (0.1 * analogRead(A2)) / 4;  //read analog pin 2 (2nd player)
-    A03Value = (0.9 * A03Value) + (0.1 * analogRead(A3)) / 4;  //read analog pin 3 (3rd player)
-    A04Value = (0.9 * A04Value) + (0.1 * analogRead(A4)) / 4;  //read analog pin 4 (4th player)
-    A05Value = (0.9 * A05Value) + (0.1 * analogRead(A5)) / 4;  //read analog pin 5 (1st mic)
+    //A02Value = (0.9 * A02Value) + (0.1 * analogRead(2)) / 4;  //read analog pin 2 (2nd player)
+    //A03Value = (0.9 * A03Value) + (0.1 * analogRead(3)) / 4;  //read analog pin 3 (3rd player)
+    //A04Value = (0.9 * A04Value) + (0.1 * analogRead(4)) / 4;  //read analog pin 4 (4th player)
+    A05Value = (0.9 * A05Value) + (0.1 * analogRead(5)) / 4;  //read analog pin 5 (1st mic)
 }
 
 
-void loop() {    
+void loop() {   
+  
+    //delay with millis
+    unsigned long currentMillis = millis();
+    if(currentMillis - previousMillis > 500){
+      previousMillis = currentMillis;
 
-    // read from the sensors
-    //readAnalogValues();
-/*      
-    Serial.write(A02); 
-    Serial.write(A02_Average); 
-    
-    Serial.write(A03); 
-    Serial.write(A03_Average); 
-    
-    Serial.write(A04); 
-    Serial.write(A04_Average); 
-
-    Serial.write(A05);
-    Serial.write(A05Value);
-    delay(50);
-*/   
- 
+      // read from the sensors
+      readAnalogValues();
+      
+      Serial.write(A05);
+      Serial.write(A05Value);
+    } 
 }
 
 /* See this expanded function to get a better understanding of the
@@ -96,14 +93,13 @@ void readEncoder(){
     }
 
   }
+  
+  //check min & max thresholds
   if(A01Value > 70) A01Value = 70;
   else if(A01Value < 0) A01Value = 0;
-  int val = A01Value;
-  val = val * 3.64f;
+   
   Serial.write(A01);
-  Serial.write(val);          // debug - remember to comment out
-                                     // before final program run
-  // you don't want serial slowing down your program if not needed
+  Serial.write(A01Value);  
 }
 
 
