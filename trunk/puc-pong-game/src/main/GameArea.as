@@ -24,6 +24,8 @@ package main{
 		
 		public function GameArea(height:int, width:int){
 			super();
+			
+			//substract 50px in order that the area isnt directly at the screen borders
 			this.mScreenHeight = height - 50;
 			this.mScreenWidth = width;
 			this.mSize = mScreenHeight;
