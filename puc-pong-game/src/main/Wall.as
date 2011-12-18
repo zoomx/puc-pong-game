@@ -72,7 +72,7 @@ package main{
 		
 		//only used with mouse control (test function)
 		private function changeWalls(e:Event):void{
-			bendWall(mouseY/4);
+			bendWall(mouseY);
 		}
 		
 		private var xx:int;
@@ -97,9 +97,13 @@ package main{
 		public function bendWall(val:int):void {
 			removeChild(mLine);
 			//createDot(val);
-
+			
+			//the "/4" have to be adjusted depending on what values the mic gives
 			if(val >= minValue && val <= maxValue){ 
-				val = 899/4; 
+				val = FlexGlobals.topLevelApplication.STAGE.height/4; 
+			}
+			else if(val > maxValue){
+				val = FlexGlobals.topLevelApplication.STAGE.height/4 - val/4; 	
 			}
 				
 			mLine = new Shape();
