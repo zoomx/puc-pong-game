@@ -55,9 +55,9 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		public static var MOUSE_CONTROL:Boolean = false;
-		public static var CURVES_BY_MOUSE:Boolean = false;
-		public static var PLAY_WITH_SOUND:Boolean = true;
+		public static var MOUSE_CONTROL:Boolean = true;
+		public static var CURVES_BY_MOUSE:Boolean = true;
+		public static var PLAY_WITH_SOUND:Boolean = false;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
