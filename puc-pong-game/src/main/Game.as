@@ -26,7 +26,7 @@ package main {
 		private var mStage:BorderContainer;
 		private var mPads:Vector.<Pad>;
 		private var mPlayerCount:int;
-		private var mPoints:int = 10;
+		private var mPoints:int = 1;
 		private var mPadSize:int = 120;
 		
 		public var PS1:int;
@@ -262,6 +262,17 @@ package main {
 				}
 			}
 			mPads = tempVec;
+			
+			if(mPads.length <=1) {
+				for each (pad in mPads)
+					showWin(pad.getWall());
+			}
+		}
+		
+		private function showWin(wall:String):void{
+			FlexGlobals.topLevelApplication.WIN_TEXT.text = wall + " WINS!!" + "\n" + "Press F5 for new game.";
+			FlexGlobals.topLevelApplication.WIN_TEXT.visible = true;
+			mStage.removeElement(mBall);
 		}
 		
 		private function markPadLastHit(pad:Pad):void{
