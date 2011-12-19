@@ -19,7 +19,7 @@
 			private var mGame:Game;
 			public var mArduinoSocket:Socket;
 			public var mGameStarted:Boolean = false;
-			
+						
 			public function init():void{
 								
 				//fullscreen window
@@ -30,6 +30,9 @@
 				STAGE.width = this.width;
 				STAGE.height = this.height;
 				STAGE.setFocus();
+				
+				WIN_TEXT.x = this.width/2 - WIN_TEXT.width/2;
+				WIN_TEXT.y = this.height/2 - WIN_TEXT.height/2;
 				
 				this.addEventListener(KeyboardEvent.KEY_UP, onKey);
 							
@@ -76,6 +79,7 @@
 				switch(e.keyCode){
 					case Keyboard.F5:
 						STAGE.removeAllElements();
+						WIN_TEXT.visible = false;
 						mGameStarted = false;
 						mGame.release();
 						mGame = new Game(STAGE, 4);
@@ -94,4 +98,7 @@
 	
 	<s:TextArea id="SCORE_TABLE" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 
 				borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
+	
+	<s:TextArea id="WIN_TEXT" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 
+				borderVisible="false" height="150" width="500" fontSize="36" fontFamily="Verdana" focusAlpha="0" visible="false" textAlign="center"/>
 </s:WindowedApplication>
