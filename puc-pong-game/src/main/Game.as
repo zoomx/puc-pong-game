@@ -26,7 +26,6 @@ package main {
 		private var mStage:BorderContainer;
 		private var mPads:Vector.<Pad>;
 		private var mPlayerCount:int;
-		private var mArduinoSocket:Socket;
 		private var mPoints:int = 10;
 		private var mPadSize:int = 120;
 		
@@ -34,7 +33,7 @@ package main {
 		public var PS2:int;
 		public var PS3:int;
 		public var PS4:int;
-		
+			
 		//incoming values from arduino, and filtered values
 		public var values:Number;
 		public var valuesRaw:Number;
@@ -55,9 +54,9 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		public static var MOUSE_CONTROL:Boolean = true;
-		public static var CURVES_BY_MOUSE:Boolean = true;
-		public static var PLAY_WITH_SOUND:Boolean = false;
+		public static var MOUSE_CONTROL:Boolean = false;
+		public static var CURVES_BY_MOUSE:Boolean = false;
+		public static var PLAY_WITH_SOUND:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
 			
@@ -79,7 +78,6 @@ package main {
 		
 		/* creates a new game with the ball, pads and the game area*/
 		private function createNewGame(playerCount:int):void{
-			if(!MOUSE_CONTROL) setUpArduino();
 			
 			//create game area
 			mArea = new GameArea(mStage.height, mStage.width);
@@ -105,6 +103,7 @@ package main {
 			
 			if(MOUSE_CONTROL)mStage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			mStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			FlexGlobals.topLevelApplication.mGameStarted = true;
 		}
 		
 		private function loadComplete(e:Event):void{
@@ -282,47 +281,14 @@ package main {
 			}
 		}
 		
-		//connects the socket with the localhost on port 5331 (COM4) and adds a listener for receiving data
-		private function setUpArduino():void{
-			mArduinoSocket = new Socket();
-			mArduinoSocket.connect("127.0.0.1", 5331);
-			mArduinoSocket.addEventListener(ProgressEvent.SOCKET_DATA, onReceiveData);
-		}
-		
-		//reads the data received from the socket and process them in pairs of pin & value 
-		private function onReceiveData(e:ProgressEvent):void{
-			var bytes:ByteArray = new ByteArray();
-			mArduinoSocket.readBytes(bytes,0,0);
-		/*	values = 0;
-			function replace(str:String, fnd:String, rpl:String):String{
-				return str.split(fnd).join(rpl);
-			}
-			
-			valuesRaw = replace(bytes, "\n", "");
-			values = Math.floor(valuesRaw / 4);
-			trace(values);
-			*/
-			
-			//sometimes we get odd number of bytes which causes that 0 values are delivered for the data variable although it isnt its value
-			//to prevent this we make that even numbers are processed (the last byte is cut when odd numbers are received)
-			var numBytes:uint = bytes.length;
-			if(numBytes%2 != 0) numBytes -= 1;
-			
-			var i:int;
-			for(i=0; i<numBytes; i++){
-				processData(bytes[i], bytes[i+1]);
-				i++;
-			}
-		}
-
 		//processes the data according to the pin (0-3: move pad | 4-7: bend walls)
-		private function processData(pin:int, data:int):void{
-			trace("pin: " + pin + " data: " + data);
+		public function processData(pin:int, data:int):void{
 			
 			var pad:Pad;
 			var wall:Wall;
 			
 			if(pin == 0){
+				trace("pin: " + pin + " data: " + data);
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.H1){
 						pad.movePad(mapSensorValue(data, pad.getWall()));
@@ -461,13 +427,16 @@ package main {
 			mPads.push(pad);
 		}
 		
+		public function isMouseControl():Boolean{
+			return MOUSE_CONTROL;
+		}
+		
 		public function release():void{
 			mTimer.stop();
 			mTimer.removeEventListener(TimerEvent.TIMER, onEnterFrame);
 			mTimer = null;
 			mSoundChannel.stop();
 			mSound = null;
-			mArduinoSocket.close();
 		}
 	}
 }
