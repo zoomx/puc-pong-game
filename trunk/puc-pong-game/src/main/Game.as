@@ -26,7 +26,7 @@ package main {
 		private var mStage:BorderContainer;
 		private var mPads:Vector.<Pad>;
 		private var mPlayerCount:int;
-		private var mPoints:int = 1;
+		private var mPoints:int = 10;
 		private var mPadSize:int = 120;
 		
 		public var PS1:int;
