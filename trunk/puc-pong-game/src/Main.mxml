@@ -17,7 +17,8 @@
 			import mx.core.Window;
 			
 			private var mGame:Game;
-			
+			public var mArduinoSocket:Socket;
+			public var mGameStarted:Boolean = false;
 			
 			public function init():void{
 								
@@ -33,12 +34,49 @@
 				this.addEventListener(KeyboardEvent.KEY_UP, onKey);
 							
 				mGame = new Game(STAGE, 4);
+				if(!mGame.isMouseControl()) setUpArduino();
+			}
+			
+			//connects the socket with the localhost on port 5331 (COM4) and adds a listener for receiving data
+			private function setUpArduino():void{
+				mArduinoSocket = new Socket();
+				mArduinoSocket.connect("127.0.0.1", 5331);
+				mArduinoSocket.addEventListener(ProgressEvent.SOCKET_DATA, onReceiveData);
+			}
+			
+			//reads the data received from the socket and process them in pairs of pin & value 
+			public function onReceiveData(e:ProgressEvent):void{
+				if(mGameStarted){
+					var bytes:ByteArray = new ByteArray();
+					mArduinoSocket.readBytes(bytes,0,0);
+					/*	values = 0;
+					function replace(str:String, fnd:String, rpl:String):String{
+					return str.split(fnd).join(rpl);
+					}
+					
+					valuesRaw = replace(bytes, "\n", "");
+					values = Math.floor(valuesRaw / 4);
+					trace(values);
+					*/
+					
+					//sometimes we get odd number of bytes which causes that 0 values are delivered for the data variable although it isnt its value
+					//to prevent this we make that even numbers are processed (the last byte is cut when odd numbers are received)
+					var numBytes:uint = bytes.length;
+					if(numBytes%2 != 0) numBytes -= 1;
+					
+					var i:int;
+					for(i=0; i<numBytes; i++){
+						mGame.processData(bytes[i], bytes[i+1]);
+						i++;
+					}
+				}
 			}
 			
 			private function onKey(e:KeyboardEvent):void{
 				switch(e.keyCode){
 					case Keyboard.F5:
 						STAGE.removeAllElements();
+						mGameStarted = false;
 						mGame.release();
 						mGame = new Game(STAGE, 4);
 						break;
