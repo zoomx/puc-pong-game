@@ -175,7 +175,6 @@ package main {
 				
 				if(p > pMid)p = pSize - p;
 			}
-			trace(p);
 			return p;
 		}
 	}

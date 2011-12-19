@@ -34,10 +34,10 @@
 				WIN_TEXT.x = this.width/2 - WIN_TEXT.width/2;
 				WIN_TEXT.y = this.height/2 - WIN_TEXT.height/2;
 				
+				WIN_TEXT.text = "Press F2 to start the game!";
+				WIN_TEXT.visible = true;
+				
 				this.addEventListener(KeyboardEvent.KEY_UP, onKey);
-							
-				mGame = new Game(STAGE, 4);
-				if(!mGame.isMouseControl()) setUpArduino();
 			}
 			
 			//connects the socket with the localhost on port 5331 (COM4) and adds a listener for receiving data
@@ -77,6 +77,12 @@
 			
 			private function onKey(e:KeyboardEvent):void{
 				switch(e.keyCode){
+					case Keyboard.F2:
+						WIN_TEXT.text = "";
+						WIN_TEXT.visible = false;
+						mGame = new Game(STAGE, 4);
+						if(!mGame.isMouseControl()) setUpArduino();
+						break;
 					case Keyboard.F5:
 						STAGE.removeAllElements();
 						WIN_TEXT.visible = false;
