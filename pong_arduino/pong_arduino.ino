@@ -53,15 +53,15 @@ void setup() {
   digitalWrite(encoder0PinA, HIGH);       // turn on pullup resistor
   pinMode(encoder0PinB, INPUT); 
   digitalWrite(encoder0PinB, HIGH);       // turn on pullup resistor
-/*  
+ 
   pinMode(encoder0PinC, INPUT); 
   digitalWrite(encoder0PinC, HIGH);       // turn on pullup resistor
   pinMode(encoder0PinD, INPUT); 
   digitalWrite(encoder0PinD, HIGH);       // turn on pullup resistor
-*/
+
   
   attachInterrupt(0, readEncoder, CHANGE);
- // attachInterrupt(1, readEncoderB, CHANGE);
+  attachInterrupt(1, readEncoderB, CHANGE);
   Serial.begin(57600);
 }
 
@@ -80,15 +80,12 @@ void readAnalogValues(){
 void loop() {   
   
     //delay with millis
-/*    unsigned long currentMillis = millis();
+    unsigned long currentMillis = millis();
     if(currentMillis - previousMillis > 50){
       previousMillis = currentMillis;
 
       // read from the sensors
-      readAnalogValues();
-          
-      //Serial.write(A01);
-      //Serial.write(A01Value);    
+      readAnalogValues();    
                  
       Serial.write(A02);
       Serial.write(A02Value);
@@ -107,25 +104,44 @@ void loop() {
       
       Serial.write(A08);
       Serial.write(A08Value);
-    } */
+    } 
 }
 
 /* See this expanded function to get a better understanding of the
  * meanings of the four possible (pinA, pinB) value pairs:
  */
 void readEncoder(){
+  bouncerA.update();
+  bouncerB.update(); 
   
-    // Test transition
-  A_set = digitalRead(encoder0PinA) == HIGH;
-  // and adjust counter + if A leads B
-  A03Value += (A_set != B_set) ? +1 : -1;
+  if (bouncerA.read() == HIGH) {   // found a low-to-high on channel A
+    if (bouncerB.read() == LOW) {  // check channel B to see which way
+      //encoder turns CCW 
+      A03Value = A03Value - 1;
+    }
+    else {
+      //encoder turns CW
+      A03Value = A03Value + 1;
+    }
+  }
+  else {                            // found a high-to-low on channel A
+    if (bouncerB.read() == LOW) {   // check channel B to see which way
+      //encoder turns CW 
+      A03Value = A03Value + 1;
+    } 
+    else {
+      //encoder turns CCW 
+      A03Value = A03Value - 1;
+    }
+
+  }
   
   //check min & max thresholds
   if(A03Value > 70) A03Value = MAX_VALUE;
   else if(A03Value < 0) A03Value = MIN_VALUE;
    
-  //Serial.write(A03);
-  Serial.println(A03Value);  
+  Serial.write(A03);
+  Serial.write(A03Value); 
 }
 
 void readEncoderB(){
@@ -161,5 +177,3 @@ void readEncoderB(){
   Serial.write(A01);
   Serial.write(A01Value);  
 }
-
-
