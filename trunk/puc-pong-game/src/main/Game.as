@@ -12,10 +12,11 @@ package main {
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
-	
+	import flash.display.Bitmap;
 	import flashx.textLayout.formats.Float;
 	
 	import mx.core.FlexGlobals;
+	import mx.states.AddChild;
 	
 	import spark.components.BorderContainer;
 	
@@ -28,6 +29,11 @@ package main {
 		private var mPlayerCount:int;
 		private var mPoints:int = 10;
 		private var mPadSize:int = 120;
+		
+		
+		//BG
+
+		
 		
 		public var PS1:int;
 		public var PS2:int;
@@ -54,8 +60,8 @@ package main {
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
-		public static var MOUSE_CONTROL:Boolean = false;
-		public static var CURVES_BY_MOUSE:Boolean = false;
+		public static var MOUSE_CONTROL:Boolean = true;
+		public static var CURVES_BY_MOUSE:Boolean = true;
 		public static var PLAY_WITH_SOUND:Boolean = true;
 		
 		public function Game(stage:BorderContainer, playerCount:int){
@@ -79,6 +85,7 @@ package main {
 		/* creates a new game with the ball, pads and the game area*/
 		private function createNewGame(playerCount:int):void{
 			
+		
 			//create game area
 			mArea = new GameArea(mStage.height, mStage.width);
 			mStage.addElement(mArea);
@@ -403,22 +410,26 @@ package main {
 			switch (playerId){
 				case 1:
 					x = (mStage.width / 2) - (width / 2);
-					y = (mStage.y + 35);
-					
+					//y = (mStage.y + 35);
+					y = 88;
 					wall = mArea.getWall("H1");
 					left = wall.mStartX;
 					right = wall.mStopX;
 					break;
 				case 2:					
 					x = (mStage.width / 2) - (width / 2);
-					y = mStage.height - 60;
+					//y = mStage.height - 60;
+					y = 685;
+					
 					wall = mArea.getWall("H2");
 					left = wall.mStopX;
 					right = wall.mStartX;
 					break;
 				case 3:
-					x = mArea.mX + mArea.mSize - 32;
-					y = (mStage.height / 2) - (width / 2);
+					//x = mArea.mX + mArea.mSize - 32;
+					x = 735;
+					//y = (mStage.height / 2) - (width / 2);
+					y = 20;
 					width = 20;
 					height = 120;
 					wall = mArea.getWall("V1");

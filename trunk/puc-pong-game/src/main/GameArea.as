@@ -41,17 +41,21 @@ package main{
 			/* coordinates for drawing the octagon */
 			var coords:Vector.<Number> = new Vector.<Number>();
 			
-			mWallLength = mScreenHeight / 2.333;
+			//groter getal = kleiner
+			//kleiner gatel = groter
+			mWallLength = mScreenHeight / 2.6;
 			
 			/* represents the first starting points to get a clean ending*/
 			var xPos:int;
 			var yPos:int;
 			
 			/* create H1 line */
-			var startX:int = (mScreenWidth / 2) - (mWallLength / 2);
-			var startY:int = 25;
+			//Hier kunnen we verschuiven
+			//hoe lager, hoe meer naar links
+			var startX:int = (mScreenWidth / 2) - (mWallLength / 1.35);
+			var startY:int = 75
 			var stopX:int = startX + mWallLength;
-			var stopY:int = 25;
+			var stopY:int = 75;
 			var wall:Wall = new Wall(startX, startY, stopX, stopY);
 			
 			wall.name = Wall.H1;
@@ -167,7 +171,7 @@ package main{
 		
 		private function drawOctagon(commands:Vector.<int>, coords:Vector.<Number>):void{
 			mOctagon = new Shape();
-			mOctagon.graphics.beginFill(0x1e1e1e); 
+			mOctagon.graphics.beginFill(0x464646); 
 			mOctagon.graphics.drawPath(commands, coords);
 			mOctagon.name = "AREA";
 			addChildAt(mOctagon, 0);
