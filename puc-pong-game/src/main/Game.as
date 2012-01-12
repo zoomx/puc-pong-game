@@ -294,12 +294,12 @@ package main {
 		
 		//processes the data according to the pin (0-3: move pad | 4-7: bend walls)
 		public function processData(pin:int, data:int):void{
-			
+			trace("pin: " + pin + " data: " + data);
 			var pad:Pad;
 			var wall:Wall;
 			
 			if(pin == 0){
-				trace("pin: " + pin + " data: " + data);
+				//trace("pin: " + pin + " data: " + data);
 				for each (pad in mPads){
 					if(pad.getWall() == Wall.H1){
 						pad.movePad(mapSensorValue(data, pad.getWall()));
@@ -332,17 +332,19 @@ package main {
 				}
 			}
 			else if(pin == 4){
+
 				for each (wall in mArea.mWalls){
 					if(wall.name == Wall.D1){
 						wall.bendWall(data);
+						break;
 					}
 				}
 			}
 			else if(pin == 5){
 				for each (wall in mArea.mWalls){
 					if(wall.name == Wall.D2){
-					wall.bendWall(data);
-				
+						wall.bendWall(data);
+						break;
 					}
 				}
 			}
@@ -350,6 +352,7 @@ package main {
 				for each (wall in mArea.mWalls){
 					if(wall.name == Wall.D3){
 						wall.bendWall(data);
+						break;
 					}
 				}
 			}
@@ -357,6 +360,7 @@ package main {
 				for each (wall in mArea.mWalls){
 					if(wall.name == Wall.D4){
 						wall.bendWall(data);
+						break;
 					}
 				}
 			}
@@ -364,7 +368,8 @@ package main {
 	
 		/* function maps the sensor value (0 - 255) to the position of the pad and returns it*/
 		public function mapSensorValue(value:int, wall:String):int{
-			var max:Number = MAX_PAD_VALUE;
+			var max:Number = 255;
+			if(wall == Wall.H2 || wall == Wall.H1) max = MAX_PAD_VALUE;
 			var length:Number = mArea.mWallLength;
 			
 			

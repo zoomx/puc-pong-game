@@ -22,8 +22,11 @@ package main{
 		public var mStopX:int;
 		public var mStopY:int;
 		
-		public var minValue:Number = 90;
-		public var maxValue:Number = 155;
+		public var mWallRadius:int = 0;
+		public var mIsBending:Boolean = false;
+		
+		public var minValue:Number = 100;
+		public var maxValue:Number = 115;
 		
 		public var mLastHit:Boolean = false;
 				
@@ -112,20 +115,24 @@ package main{
 			
 			if(name == Wall.D1){
 				mLine.graphics.curveTo(mStartX+(0.5*val), mStopY-(0.5*val), mStopX, mStopY);
+				mIsBending = true;
 			}
 			else if(name == Wall.D3){
-				mLine.graphics.curveTo(mStartX-(0.5*val), mStopY+(0.5*val), mStopX, mStopY);	
+				mLine.graphics.curveTo(mStartX-(0.5*val), mStopY+(0.5*val), mStopX, mStopY);
+				mIsBending = true;
 			}
 			else if(name == Wall.D2){
 				mLine.graphics.curveTo(mStopX+(0.5*val), mStartY+(0.5*val), mStopX, mStopY);
+				mIsBending = true;
 			} 
 			else if (name == Wall.D4){
 				mLine.graphics.curveTo(mStopX-(0.5*val), mStartY-(0.5*val), mStopX, mStopY);
+				mIsBending = true;
 			}
 			else { 
 				createWall(); 
+				mIsBending = false;
 			}
-
 			addChild(mLine);
 		}
 		public function getWall():Sprite{

@@ -6,6 +6,7 @@ package main {
 	import math.VectorAnalysis;
 	
 	import mx.core.UIComponent;
+	import mx.core.mx_internal;
 	
 	public class Ball extends UIComponent{
 		
@@ -30,7 +31,6 @@ package main {
 		public static var MAX_VELOCITY:Number = 3.5;
 	
 		public function Ball(startX:int, startY:int, direction:Point) {
-		
 			super();
 			direction = VectorAnalysis.normalize(direction);
 			this.mPosition = new Point(startX, startY);
@@ -71,42 +71,63 @@ package main {
 		
 		//calculates and sets a new direction for the ball if it hits a wall
 		public function setNewDirection(wall:Wall):Point{
-			if(wall.name == Wall.H1){
+			var vWall:Point = new Point();
+			var vBall:Point = new Point();
+			
+			if(wall.name == Wall.H1 || wall.name == Wall.H2){
 				return new Point(mDirection.x, -mDirection.y);;
 			}
-			else if(wall.name == Wall.H2){
-				return new Point(mDirection.x, -mDirection.y);;
-			}
-			else if(wall.name == Wall.V1){
+			else if(wall.name == Wall.V1 || wall.name == Wall.V2){
 				return new Point(-mDirection.x, mDirection.y);;
 			}
-			else if(wall.name == Wall.V2){
-				return new Point(-mDirection.x, mDirection.y);
-			}else{
-
-				var angle:Number;
+			else{
 				
-				if(wall.name == Wall.D1) angle = 45;
-				else if(wall.name == Wall.D2) angle = 135;
-				else if(wall.name == Wall.D3) angle = 45;
-				else if(wall.name == Wall.D4) angle = 135;
+				if(false){//wall.mIsBending){
+					
+					var dx:Number = mPosition.x + wall.mWallRadius/2 - mPosition.x;
+					var dy:Number = mPosition.y + wall.mWallRadius/2 - mPosition.y;
+					var len:Number = Math.sqrt(dx*dx-dy*-dy);
+					
+					dx = dx/len;
+					dy = dy/len;
+									
+					//determine wall vector
+					vWall = VectorAnalysis.getVector(wall.mStopX - wall.mStartX, angle);
+					//determine ball vector
+					vBall.x = mPosition.x - mLastPosition.x;
+					vBall.y = mPosition.y - mLastPosition.y;
+					
+					var a_sc:Number = -vBall.x * dx - vBall.y * dy;
+					var b_sc:Number = vWall.x * dx - vWall.y * -dy;
+					var a_cx:Number = -dx * a_sc;
+					var a_cy:Number = -dy * a_sc;
+					
+					var ref:Point = new Point(a_cx, a_cy);
+					var nRef:Point = VectorAnalysis.normalize(ref);
+					return(new Point(nRef.x * mVelocity, nRef.y * mVelocity));
+				}
+				else{
 				
-				var vWall:Point = new Point();
-				var vBall:Point = new Point();
-				
-				//determine wall vector
-				vWall = VectorAnalysis.getVector(wall.mStopX - wall.mStartX, angle);
-				
-				//determine ball vector
-				vBall.x = mPosition.x - mLastPosition.x;
-				vBall.y = mPosition.y - mLastPosition.y;
-								
-				var n:Point = VectorAnalysis.normalize(vWall); // normalized wall vector
-				var r:Point = VectorAnalysis.getReflectionVector(vBall, n); // reflection result vector
-				
-				n = VectorAnalysis.normalize(r);
-				
-				return new Point(n.x * mVelocity, n.y * mVelocity);
+					var angle:Number;
+					
+					if(wall.name == Wall.D1) angle = 45;
+					else if(wall.name == Wall.D2) angle = 135;
+					else if(wall.name == Wall.D3) angle = 45;
+					else if(wall.name == Wall.D4) angle = 135;
+										
+					//determine wall vector
+					vWall = VectorAnalysis.getVector(wall.mStopX - wall.mStartX, angle);
+					//determine ball vector
+					vBall.x = mPosition.x - mLastPosition.x;
+					vBall.y = mPosition.y - mLastPosition.y;
+									
+					var n:Point = VectorAnalysis.normalize(vWall); // normalized wall vector
+					var r:Point = VectorAnalysis.getReflectionVector(vBall, n); // reflection result vector
+					
+					n = VectorAnalysis.normalize(r);
+					
+					return new Point(n.x * mVelocity, n.y * mVelocity);
+				}
 			}
 		}
 		
