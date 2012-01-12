@@ -56,6 +56,7 @@ package main{
 			
 			wall.name = Wall.H1;
 			wall.mIsSolid = false;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			
@@ -73,6 +74,7 @@ package main{
 			stopY = startY + (mWallLength * (2/3));
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D1;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -86,6 +88,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V1;
 			wall.mIsSolid = false;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -98,6 +101,7 @@ package main{
 			stopY = startY + (mWallLength * (2/3));
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D2;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -111,6 +115,7 @@ package main{
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.H2;
 			wall.mIsSolid = false;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -123,6 +128,7 @@ package main{
 			stopY = startY - (mWallLength * (2/3));
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.D3;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
@@ -135,6 +141,7 @@ package main{
 			stopY = startY - mWallLength;
 			wall = new Wall(startX, startY, stopX, stopY);
 			wall.name = Wall.V2;
+			wall.mWallRadius = mWallLength/2;
 			wall.mIsSolid = false;
 			addChild(wall);
 			mWalls.push(wall);
@@ -149,6 +156,7 @@ package main{
 			stopY = startY - (mWallLength * (2/3));
 			wall = new Wall(startX, startY, xPos, yPos);
 			wall.name = Wall.D4;
+			wall.mWallRadius = mWallLength/2;
 			addChild(wall);
 			mWalls.push(wall);
 			commands.push(2,2);
