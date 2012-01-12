@@ -5,24 +5,61 @@
 					   showStatusBar="false"
 					   backgroundColor="0x1e1e1e"
 					   creationComplete="init()"
+					   
 					   frameRate="60">
+<fx:Style>
+		
+		
+	</fx:Style>
 	<fx:Declarations>
 
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import flash.events.*;
+			
 			import main.Game;
 			
-			import mx.core.Window;
+			import mx.core.UIComponent;
+			
+			import org.bytearray.gif.*;
+			import org.bytearray.gif.events.FileTypeEvent;
+			import org.bytearray.gif.events.FrameEvent;
+			import org.bytearray.gif.events.GIFPlayerEvent;
+			import org.bytearray.gif.player.GIFPlayer;
+			
 			
 			private var mGame:Game;
+			private var myGIFPlayer:GIFPlayer
+			
 			public var mArduinoSocket:Socket;
 			public var mGameStarted:Boolean = false;
-						
+			
 			public function init():void{
-								
+							
+				// we create the GIFPlayer, it plays automatically by default
+				myGIFPlayer = new GIFPlayer();
+				// we show it
+				GIF_CONTAINER.addChild(myGIFPlayer );
+
+				// we load a gif file
+				myGIFPlayer.load ( new URLRequest ("Background.gif") );
+				// you can also load any valid GIF stream (ByteArray) with the loadBytes method (version 0.2)
+				//myGIFPlayer.loadBytes ( gif );
+				// listen for the IOErrorEvent.IO_ERROR event, dispatched when the GIF fails to load
+				myGIFPlayer.addEventListener ( IOErrorEvent.IO_ERROR, onIOError );
+				// listen for the GIFPlayerEvent.COMPLETE event, dispatched when GIF is loaded
+				myGIFPlayer.addEventListener ( GIFPlayerEvent.COMPLETE, onCompleteGIFLoad );
+				// listen for the FrameEvent.FRAME_RENDERED event, dispatched when a GIF frame is rendered on screen
+				myGIFPlayer.addEventListener ( FrameEvent.FRAME_RENDERED, onFrameRendered );
+				// listen for the FileTypeEvent.INVALID event, dispatched when an invalid file is loaded
+				myGIFPlayer.addEventListener ( FileTypeEvent.INVALID, onInvalidFileLoaded );
+				// get total frames
+				myGIFPlayer.totalFrames;
+		
 				//fullscreen window
+			
 				nativeWindow.stage.fullScreenSourceRect = new Rectangle(0, 0, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
 				nativeWindow.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 				
@@ -36,8 +73,28 @@
 				
 				WIN_TEXT.text = "Press F2 to start the game!";
 				WIN_TEXT.visible = true;
-				
+				//IMG.addEventListener(
+				//IMG.load("../BackgroundAudience.jpg");
 				this.addEventListener(KeyboardEvent.KEY_UP, onKey);
+			}
+			
+			private function onIOError(e:IOErrorEvent):void{
+				
+			}
+			
+			private function onCompleteGIFLoad(e:GIFPlayerEvent):void{
+				myGIFPlayer.play();
+				myGIFPlayer.stop();
+				myGIFPlayer.gotoAndStop(1);
+				myGIFPlayer.gotoAndPlay(2);					
+			}
+			
+			private function onFrameRendered(e:FrameEvent):void{
+				
+			}
+			
+			private function onInvalidFileLoaded(e:FileTypeEvent):void{
+				
 			}
 			
 			//connects the socket with the localhost on port 5331 (COM4) and adds a listener for receiving data
@@ -98,12 +155,18 @@
 		]]>
 	</fx:Script>
 	
-	<s:BorderContainer id="STAGE" backgroundColor="0x1e1e1e" borderVisible="false">
+	
+		
+	<mx:Image id="IMG" source="@Embed(source='BackgroundGradient.jpg')" />
+	<mx:UIComponent id="GIF_CONTAINER"/>
+	<s:BorderContainer id="STAGE" backgroundAlpha="0" borderVisible="false">
 		
 	</s:BorderContainer>
 	
 	<s:TextArea id="SCORE_TABLE" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 
 				borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
+	
+	
 	
 	<s:TextArea id="WIN_TEXT" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 
 				borderVisible="false" height="150" width="500" fontSize="36" fontFamily="Verdana" focusAlpha="0" visible="false" textAlign="center"/>

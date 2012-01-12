@@ -67,7 +67,7 @@ package main{
 			removeChild(mLine);
 			}
 			mLine = new Shape();
-			mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+			mLine.graphics.lineStyle(20, 0xdadada, 1.0, false, "normal", CapsStyle.ROUND);
 			mLine.graphics.moveTo(mStartX, mStartY);
 			mLine.graphics.lineTo(mStopX, mStopY);
 			addChild(mLine);
@@ -110,7 +110,7 @@ package main{
 			}
 				
 			mLine = new Shape();
-			mLine.graphics.lineStyle(20, 0x757575, 1.0, false, "normal", CapsStyle.ROUND);
+			mLine.graphics.lineStyle(20, 0xdadada, 1.0, false, "normal", CapsStyle.ROUND);
 			mLine.graphics.moveTo(mStartX, mStartY);
 			
 			if(name == Wall.D1){
