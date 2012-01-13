@@ -1,4 +1,5 @@
 package main {
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -12,7 +13,9 @@ package main {
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
-	import flash.display.Bitmap;
+	import flash.utils.clearInterval;
+	import flash.utils.setInterval;
+	
 	import flashx.textLayout.formats.Float;
 	
 	import mx.core.FlexGlobals;
@@ -63,8 +66,10 @@ package main {
 		public static var MOUSE_CONTROL:Boolean = true;
 		public static var CURVES_BY_MOUSE:Boolean = true;
 		public static var PLAY_WITH_SOUND:Boolean = true;
-		
+		public var hoi:Boolean = false;
 		public function Game(stage:BorderContainer, playerCount:int){
+
+			
 			
 			mStage = stage;
 			mPlayerCount = playerCount;
@@ -79,7 +84,9 @@ package main {
 		private function loadSound():void{
 			//loadsound
 			mSound = new Sound(new URLRequest(mLink));
-			mSound.addEventListener(Event.COMPLETE, loadComplete);			
+			mSound.addEventListener(Event.COMPLETE, loadComplete);	
+			
+			
 		}
 		
 		/* creates a new game with the ball, pads and the game area*/
@@ -126,7 +133,10 @@ package main {
 			mTimer = new Timer(26);
 			mTimer.addEventListener(TimerEvent.TIMER, onEnterFrame);
 			mTimer.start();
+			
+
 		}
+
 		
 		private function onMouseMove(e:MouseEvent):void{
 			for each (var pad:Pad in mPads){
@@ -183,11 +193,14 @@ package main {
 			
 			var padHit:Boolean = false;
 			
-			//test if ball is hit by the ball
+			//test if pad is hit by the ball
 			for each (var pad:Pad in mPads){
 				if(pad.hits(mBall)){
 					if(!pad.mLastHit)mBall.mDirection = mBall.setDirectionByPadHit(pad);
 					markPadLastHit(pad);
+				
+					
+					
 					mArea.markWallLastHit(null);
 					padHit = true;
 					break;
@@ -200,16 +213,24 @@ package main {
 			}
 			
 		}
-		
+
 		private function wallHitTest():void{
 			for each(var wall:Wall in mArea.mWalls){
 				if(wall.hits(mBall)){
+	
+			
+		
 					if(!wall.mLastHit)mBall.mDirection = mBall.setNewDirection(wall);
 					//trace(wall.name + ": " + mBall.mDirection.x + " | " + mBall.mDirection.y );
 					if(wall.name == "H1" && !wall.mIsSolid) { 
+						
 						PS1 --;
 						updateScore();
+						
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
+						
+						
+						
 						
 						if(PS1 <= 0) removePlayer(wall);
 					}else{
@@ -219,6 +240,7 @@ package main {
 					if(wall.name == "H2" && !wall.mIsSolid) { 
 						PS3 --;
 						updateScore();
+						
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						if(PS3 <= 0) removePlayer(wall);
 					}else{
@@ -228,6 +250,7 @@ package main {
 					if(wall.name == "V1" && !wall.mIsSolid) { 
 						PS2 --;
 						updateScore();
+						 
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						if(PS2 <= 0) removePlayer(wall);
 					}else{
@@ -237,6 +260,7 @@ package main {
 					if(wall.name == "V2" && !wall.mIsSolid) { 
 						PS4 --;
 						updateScore();
+						 
 						mBall.mPosition.x = mStage.width/2; mBall.mPosition.y = mStage.height/2; mBall.moveBall();
 						if(PS4 <= 0) removePlayer(wall);
 					}else{

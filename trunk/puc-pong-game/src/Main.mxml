@@ -44,7 +44,7 @@
 				GIF_CONTAINER.addChild(myGIFPlayer );
 
 				// we load a gif file
-				myGIFPlayer.load ( new URLRequest ("Background.gif") );
+				myGIFPlayer.load ( new URLRequest ("BackgroundFinal.gif") );
 				// you can also load any valid GIF stream (ByteArray) with the loadBytes method (version 0.2)
 				//myGIFPlayer.loadBytes ( gif );
 				// listen for the IOErrorEvent.IO_ERROR event, dispatched when the GIF fails to load
