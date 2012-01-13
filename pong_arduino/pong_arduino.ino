@@ -13,34 +13,25 @@ Bounce bouncerC = Bounce(encoder0PinC, 5);
 Bounce bouncerD = Bounce(encoder0PinD, 5);
 
 //pad identification bytes
-byte A01 = B000;
-byte A02 = B001;
-byte A03 = B010;
-byte A04 = B011;
+byte Rotary_01 = B001;
+byte Rotary_02 = B011;
+byte Slider_01 = B010;
+byte Slider_02 = B000;
 
 //mic identification bytes
-byte A05 = B100;
-byte A06 = B101;
-byte A07 = B110;
-byte A08 = B111;
+byte Mic_01 = B110;
+byte Mic_02 = B111;
+byte Mic_03 = B101;
+byte Mic_04 = B100;
 
-int A01Value = 0;
-int A02Value;
-int A03Value = 0;
-int A04Value;
-int A05Value;
-int A06Value;
-int A07Value;
-int A08Value;
-
-boolean A_set;
-boolean B_set;
-
-//encoder variables
-int state, prevstate = 0, count = 0;
-int stateB, prevstateB = 0, countB = 0;
-int nextEncoderState[4] = { 2, 0, 3, 1 };
-int prevEncoderState[4] = { 1, 3, 0, 2 };
+int Rotary_01_Value = 0;
+int Rotary_02_Value = 0;
+int Slider_01_Value;
+int Slider_02_Value;
+int Mic_01_Value;
+int Mic_02_Value;
+int Mic_03_Value;
+int Mic_04_Value;
 
 static int MAX_VALUE = 70;
 static int MIN_VALUE = 0;
@@ -53,7 +44,7 @@ void setup() {
   digitalWrite(encoder0PinA, HIGH);       // turn on pullup resistor
   pinMode(encoder0PinB, INPUT); 
   digitalWrite(encoder0PinB, HIGH);       // turn on pullup resistor
- 
+
   pinMode(encoder0PinC, INPUT); 
   digitalWrite(encoder0PinC, HIGH);       // turn on pullup resistor
   pinMode(encoder0PinD, INPUT); 
@@ -67,13 +58,12 @@ void setup() {
 
 //returs smoothed analog values
 void readAnalogValues(){
-    //A01Value = (0.9 * A01Value) + (0.1 * analogRead(1)) / 4;  //read analog pin 2 (1st player)
-    A02Value = (0.9 * A02Value) + (0.1 * analogRead(2)) / 4;  //read analog pin 3 (3rd player)
-    A04Value = (0.9 * A04Value) + (0.1 * analogRead(4)) / 4;  //read analog pin 4 (4th player)
-    A05Value = (0.9 * A05Value) + (0.1 * analogRead(5)) / 4;  //read analog pin 5 (1st mic)
-    A06Value = (0.9 * A06Value) + (0.1 * analogRead(6)) / 4;  //read analog pin 5 (2nd mic)
-    A07Value = (0.9 * A07Value) + (0.1 * analogRead(7)) / 4;  //read analog pin 5 (3rd mic)
-    A08Value = (0.9 * A08Value) + (0.1 * analogRead(8)) / 4;  //read analog pin 5 (4th mic)
+    Slider_01_Value = (0.8 * Slider_01_Value) + (0.2 * analogRead(1)) / 4;  //read analog pin 3 (3rd player)
+    Slider_02_Value = (0.8 * Slider_02_Value) + (0.2 * analogRead(2)) / 4;  //read analog pin 4 (4th player)
+    Mic_01_Value = (0.9 * Mic_01_Value) + (0.1 * analogRead(4)) / 4;  //read analog pin 5 (1st mic)
+    Mic_02_Value = (0.9 * Mic_02_Value) + (0.1 * analogRead(4)) / 4;  //read analog pin 5 (2nd mic)
+    Mic_03_Value = (0.9 * Mic_03_Value) + (0.1 * analogRead(5)) / 4;  //read analog pin 5 (3rd mic)
+    Mic_04_Value = (0.9 * Mic_04_Value) + (0.1 * analogRead(6)) / 4;  //read analog pin 5 (4th mic)
 }
 
 
@@ -86,25 +76,25 @@ void loop() {
 
       // read from the sensors
       readAnalogValues();    
-                 
-      Serial.write(A02);
-      Serial.write(A02Value);
+             
+      Serial.write(Slider_01);
+      Serial.write(Slider_01_Value);
+     
+      Serial.write(Slider_02);
+      Serial.write(Slider_02_Value);
       
-      Serial.write(A04);
-      Serial.write(A04Value);
+      Serial.write(Mic_01);
+      Serial.write(Mic_01_Value);
       
-      Serial.write(A05);
-      Serial.write(A05Value);
+      Serial.write(Mic_02);
+      Serial.write(Mic_02_Value);
       
-      Serial.write(A06);
-      Serial.write(A06Value);
+      Serial.write(Mic_03);
+      Serial.write(Mic_03_Value);
       
-      Serial.write(A07);
-      Serial.write(A07Value);
-      
-      Serial.write(A08);
-      Serial.write(A08Value);
-    } 
+      Serial.write(Mic_04);
+      Serial.write(Mic_04_Value);
+  }
 }
 
 /* See this expanded function to get a better understanding of the
@@ -117,31 +107,31 @@ void readEncoder(){
   if (bouncerA.read() == HIGH) {   // found a low-to-high on channel A
     if (bouncerB.read() == LOW) {  // check channel B to see which way
       //encoder turns CCW 
-      A03Value = A03Value - 1;
+      Rotary_01_Value = Rotary_01_Value - 1;
     }
     else {
       //encoder turns CW
-      A03Value = A03Value + 1;
+      Rotary_01_Value = Rotary_01_Value + 1;
     }
   }
   else {                            // found a high-to-low on channel A
     if (bouncerB.read() == LOW) {   // check channel B to see which way
       //encoder turns CW 
-      A03Value = A03Value + 1;
+      Rotary_01_Value = Rotary_01_Value + 1;
     } 
     else {
       //encoder turns CCW 
-      A03Value = A03Value - 1;
+      Rotary_01_Value = Rotary_01_Value - 1;
     }
 
   }
   
   //check min & max thresholds
-  if(A03Value > 70) A03Value = MAX_VALUE;
-  else if(A03Value < 0) A03Value = MIN_VALUE;
+  if(Rotary_01_Value > 70) Rotary_01_Value = MAX_VALUE;
+  else if(Rotary_01_Value < 0) Rotary_01_Value = MIN_VALUE;
    
-  Serial.write(A03);
-  Serial.write(A03Value); 
+  Serial.write(Rotary_01);
+  Serial.write(Rotary_01_Value); 
 }
 
 void readEncoderB(){
@@ -151,29 +141,29 @@ void readEncoderB(){
   if (bouncerC.read() == HIGH) {   // found a low-to-high on channel A
     if (bouncerD.read() == LOW) {  // check channel B to see which way
       //encoder turns CCW 
-      A01Value = A01Value - 1;
+      Rotary_02_Value = Rotary_02_Value - 1;
     }
     else {
       //encoder turns CW
-      A01Value = A01Value + 1;
+      Rotary_02_Value = Rotary_02_Value + 1;
     }
   }
   else {                            // found a high-to-low on channel A
     if (bouncerD.read() == LOW) {   // check channel B to see which way
       //encoder turns CW 
-      A01Value = A01Value + 1;
+      Rotary_02_Value = Rotary_02_Value + 1;
     } 
     else {
       //encoder turns CCW 
-      A01Value = A01Value - 1;
+      Rotary_02_Value = Rotary_02_Value - 1;
     }
 
   }
   
   //check min & max thresholds
-  if(A01Value > 70) A01Value = MAX_VALUE;
-  else if(A01Value < 0) A01Value = MIN_VALUE;
+  if(Rotary_02_Value > 70) Rotary_02_Value = MAX_VALUE;
+  else if(Rotary_02_Value < 0) Rotary_02_Value = MIN_VALUE;
    
-  Serial.write(A01);
-  Serial.write(A01Value);  
+  Serial.write(Rotary_02);
+  Serial.write(Rotary_02_Value);  
 }
