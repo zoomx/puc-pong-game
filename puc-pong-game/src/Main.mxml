@@ -163,9 +163,14 @@
 		
 	</s:BorderContainer>
 	
-	<s:TextArea id="SCORE_TABLE" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 
+	<s:TextArea id="SCORE_TABLE1" contentBackgroundAlpha="1" contentBackgroundColor="0x464646" color="0x1cc454" 
+				width="110" height="110" borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
+	<s:TextArea id="SCORE_TABLE2" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xc4b81c" 
 				borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
-	
+	<s:TextArea id="SCORE_TABLE3" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xc61a1a" 
+				borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
+	<s:TextArea id="SCORE_TABLE4" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0x1fb4bf" 
+				borderVisible="false" fontSize="16" fontFamily="Verdana" focusAlpha="0"/>
 	
 	
 	<s:TextArea id="WIN_TEXT" contentBackgroundAlpha="0" contentBackgroundColor="0x1e1e1e" color="0xfefefe" 

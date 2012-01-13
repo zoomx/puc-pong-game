@@ -56,16 +56,16 @@ package main {
 		private var mSoundChannel:SoundChannel;
 		private var mLink:String = "http://nm2n.net/snd/sect.mp3";
 		
-		private var mScore:String = "Player 1: " + PS1 + "\n" + 
-									"Player 2: " + PS2 + "\n" + 
-									"Player 3: " + PS3 + "\n" + 
-									"Player 4: " + PS4;
+		private var mScore1:String = "Player 1: " + PS1; 
+		private var mScore2:String = "Player 2: " + PS2; 
+		private var mScore3:String = "Player 3: " + PS3; 
+		private var mScore4:String = "Player 4: " + PS4;
 		
 		// true:  game controlled by mouse
 		// false: game controlled by arduino 
 		public static var MOUSE_CONTROL:Boolean = true;
 		public static var CURVES_BY_MOUSE:Boolean = true;
-		public static var PLAY_WITH_SOUND:Boolean = true;
+		public static var PLAY_WITH_SOUND:Boolean = false;
 		public var hoi:Boolean = false;
 		public function Game(stage:BorderContainer, playerCount:int){
 
@@ -276,8 +276,28 @@ package main {
 		}
 		
 		private function updateScore():void{
-			mScore = "Player 1: " + PS1 + "\n" + "Player 2: " + PS2 + "\n" + "Player 3: " + PS3 + "\n" + "Player 4: " + PS4;
-			FlexGlobals.topLevelApplication.SCORE_TABLE.text = mScore;
+		
+			mScore1 = "Player 1: " + PS1; 
+			mScore2 = "Player 2: " + PS2; 
+			mScore3 = "Player 3: " + PS3; 
+			mScore4 = "Player 4: " + PS4;
+			
+			FlexGlobals.topLevelApplication.SCORE_TABLE1.y = 120;
+			FlexGlobals.topLevelApplication.SCORE_TABLE1.x = 800;
+			
+			FlexGlobals.topLevelApplication.SCORE_TABLE2.y = 140;
+			FlexGlobals.topLevelApplication.SCORE_TABLE2.x = 800;
+			
+			FlexGlobals.topLevelApplication.SCORE_TABLE3.y = 160;
+			FlexGlobals.topLevelApplication.SCORE_TABLE3.x = 800;
+			
+			FlexGlobals.topLevelApplication.SCORE_TABLE4.y = 180;
+			FlexGlobals.topLevelApplication.SCORE_TABLE4.x = 800;
+			
+			FlexGlobals.topLevelApplication.SCORE_TABLE1.text = mScore1;
+			FlexGlobals.topLevelApplication.SCORE_TABLE2.text = mScore2;
+			FlexGlobals.topLevelApplication.SCORE_TABLE3.text = mScore3;
+			FlexGlobals.topLevelApplication.SCORE_TABLE4.text = mScore4;
 		}
 		
 		// remove a player (pad) from a distinct wall
